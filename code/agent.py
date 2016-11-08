@@ -26,12 +26,13 @@ class Agent:
 		# returns whether the agent is satisfied, based on whether it can afford rent,
 		#and some other things. Rent is determined by the cell, and is passed in.
 		#if the agent isn't satisfied, move.
-		neighbors = env.get_neighbors(self.loc) #TODO: make get_neighbors function for the environment
+		# neighbors = env.get_neighbors(self.loc) #TODO: make get_neighbors function for the environment
 
 		if rent > self.income/4:
 			return False
 
 	def update_creativity(self, env):
 		#if there are lots of creative neighbors, increase creativity.
+		pass
 
 
