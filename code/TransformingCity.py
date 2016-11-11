@@ -1,6 +1,8 @@
 import numpy as np
 from Cell2D import Cell2D, Cell2DViewer
 from matplotlib.colors import LinearSegmentedColormap
+import agent
+from collections import defaultdict
 
 # Land Use Enum
 LU_UNDEVELOPED = 0
@@ -36,6 +38,21 @@ class TransformingCity(Cell2D):
         self.creative_dens_p = np.zeros((m,n))
         self.num_satisfied = np.zeros((m,n))
         # TODO(rlouie): add creative population counts to assign creative value (line 63, netlogo model)
+        self.make_agents()
+
+    @staticmethod
+    def make_locs(n, m):
+        """Makes array where each row is an index in an `n` by `m` grid.
+        
+        n: int number of rows
+        m: int number of cols
+        
+        returns: NumPy array
+        """
+        left = np.repeat(np.arange(m), n)
+        right = np.tile(np.arange(n), m)
+        return np.transpose([left, right])
+
 
     def init_landuse(self, landtypes, props, m, n):
         """
@@ -47,11 +64,31 @@ class TransformingCity(Cell2D):
 
     def get_residential_neighbors(self, loc):
         residential = self.landuse == 1
-        print(residential)
         return residential
 
     def step(self):
-        pass
+        a = agent.Agent((0, 0), education=False)
+        a.step(self, 20000)
+
+    def make_agents(self):
+        a = []
+        occupants = defaultdict(list)
+        locs = TransformingCity.make_locs(self.n, self.m)
+        residential = self.landuse == LU_RESIDENTIAL # logical array
+        # TODO(rlouie): rename locs_where
+        residential_locs = np.transpose(np.nonzero(residential))        
+        # residential_locs = [loc for loc in locs if self.landuse[loc] == LU_RESIDENTIAL]
+
+        for i in range(400): #change to initializing number of agents...
+            ind = np.random.randint(len(residential_locs))
+            loc = tuple(residential_locs[ind])
+            a.append(agent.Agent(loc))
+            occupants[loc].append(i)
+
+        self.agents = a
+        self.occupants = occupants
+        print(a)
+        print(occupants)
 
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
@@ -86,3 +123,7 @@ class LandUseViewer(Cell2DViewer):
                       LU_UNDEVELOPED: colors[1],
                       LU_GRAY: colors[5]})
     options = dict(interpolation='none', alpha=0.8)
+
+
+t = TransformingCity(10)
+t.step()
