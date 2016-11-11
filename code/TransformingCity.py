@@ -111,6 +111,13 @@ class TransformingCity(Cell2D):
                 self.occupants[new_loc].add(i)
                 self.occupants[old_loc].discard(i)
 
+        #update the populations.
+        for patch, occupant_idxs in self.occupants.items():
+            self.pop_count[patch] = len(occupant_idxs)
+            self.pop_count_cr_h[patch] = np.sum([self.agents[idx].creativity == 10 for idx in occupant_idxs])
+            self.pop_count_cr_m[patch] = np.sum([self.agents[idx].creativity == 5 for idx in occupant_idxs])
+            self.pop_count_cr[patch] = self.pop_count_cr_h[patch] + self.pop_count_cr_m[patch]
+
     def make_agents(self):
         a = []
         occupants = defaultdict(set)
@@ -176,4 +183,5 @@ t = TransformingCity(10)
 if __name__ == '__main__':
     t = TransformingCity(10)
     t.step()
+
 
