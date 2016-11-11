@@ -45,6 +45,15 @@ class TransformingCity(Cell2D):
         assert abs(sum(props) - 1.0) < 0.001, "Sum of props should add to 1, it now is %f" % sum(props)
         return np.random.choice(landtypes, (n, m), p=props).astype(np.int8)
 
+    def get_residential_neighbors(self, loc):
+        residential = self.landuse == 1
+        print(residential)
+        return residential
+
+    def step(self):
+        pass
+
+
 def make_cmap(color_dict, vmax=None, name='mycmap'):
     """Makes a custom color map.
 
