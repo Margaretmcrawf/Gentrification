@@ -63,16 +63,23 @@ class TransformingCity(Cell2D):
         return np.random.choice(landtypes, (n, m), p=props).astype(np.int8)
 
     def get_residential_neighbors(self, loc):
-        residential = self.landuse == 1
-        return residential
+        #TODO(mcrawford): figure out what a neighborhood means and sort on that
+        residential = self.landuse == LU_RESIDENTIAL # logical array
+        residential_locs = np.transpose(np.nonzero(residential))
+        return residential_locs
 
     def step(self):
-        a = agent.Agent((0, 0), education=False)
-        a.step(self, 20000)
+
+        for i, agent in enumerate(self.agents):
+            old_loc = agent.loc
+            new_loc = agent.step(self, 50000)
+            if new_loc:
+                self.occupants[new_loc].add(i)
+                self.occupants[old_loc].discard(i)
 
     def make_agents(self):
         a = []
-        occupants = defaultdict(list)
+        occupants = defaultdict(set)
         locs = TransformingCity.make_locs(self.n, self.m)
         residential = self.landuse == LU_RESIDENTIAL # logical array
         # TODO(rlouie): rename locs_where
@@ -83,12 +90,10 @@ class TransformingCity(Cell2D):
             ind = np.random.randint(len(residential_locs))
             loc = tuple(residential_locs[ind])
             a.append(agent.Agent(loc))
-            occupants[loc].append(i)
+            occupants[loc].add(i)
 
         self.agents = a
         self.occupants = occupants
-        print(a)
-        print(occupants)
 
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
@@ -124,6 +129,12 @@ class LandUseViewer(Cell2DViewer):
                       LU_GRAY: colors[5]})
     options = dict(interpolation='none', alpha=0.8)
 
+class PopulationViewer(Cell2DViewer):
+    colors = ['#fdc086', '#cd6302', '#d3d3d3']
+    cmap = make_cmap({1: colors[0],
+                      5: colors[1],
+                      0: colors[2]})
+    options = dict(interpolation='none', alpha=0.8)
+
 
 t = TransformingCity(10)
-t.step()
