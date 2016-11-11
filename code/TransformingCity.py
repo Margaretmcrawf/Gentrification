@@ -24,21 +24,35 @@ class TransformingCity(Cell2D):
         self.m = m
         self.n = n
 
+        self.allow_development = True
+
         # initialize cell values
-        self.landuse = self.init_landuse(range(7), LU_PROPS, m, n)
+        self.setup_landuse(range(7), LU_PROPS, m, n)
         self.amenities = np.zeros((m,n))
         self.pop_count = np.zeros((m,n)) # count of agents on patch - used to classify patches as high density residential
         self.pop_dens = np.zeros((m,n))
-        self.occupancy_start = np.zeros((m,n))
+        self.occupancy_start = None
         self.percent_full = np.zeros((m,n), np.float)
         self.rent_start = np.ones((m, n))
         self.rent_current = np.ones((m, n))
         self.creative_space = np.zeros((m,n), np.bool)
         self.creative_value = np.zeros((m,n))
-        self.creative_dens_p = np.zeros((m,n))
+        self.creative_dens_p = 3 # threshold that defines how many creative people it takes to define a patch as a creative space
         self.num_satisfied = np.zeros((m,n))
-        # TODO(rlouie): add creative population counts to assign creative value (line 63, netlogo model)
+        # creative population counts used to assign creative value and creative space
+        self.pop_count_cr = np.zeros((m,n))
+        self.pop_count_crt = np.zeros((m,n))
+        self.pop_count_cr_h = np.zeros((m,n)) # high creative
+        self.pop_count_cr_m = np.zeros((m,n)) # medium creative
+        self.pop_count_cr_ht = np.zeros((m,n))
+        self.pop_count_cr_mt = np.zeros((m,n))
+        self.pop_count_cr_n = np.zeros((m,n)) # TODO(rlouie): what does these pop counts mean in the code
+        self.pop_count_cr_diff = np.zeros((m,n)) # diff of count of creative pop to current count of creative pop if negative then gained value, otherwise decrease
+        # TODO(rlouie): if this is a factor, should it just be a single number and not a number for each cell?
+        self.pop_count_cr_minus = np.zeros((m,n)) # factor to subtract for loss of creative value
+
         self.make_agents()
+        self.setup_creative_space()
 
     @staticmethod
     def make_locs(n, m):
@@ -54,13 +68,33 @@ class TransformingCity(Cell2D):
         return np.transpose([left, right])
 
 
-    def init_landuse(self, landtypes, props, m, n):
+    def setup_landuse(self, landtypes, props, m, n):
         """
         landtypes: list/tuple, integer values
         props: list/tuple, len(landtypes), float values
         """
         assert abs(sum(props) - 1.0) < 0.001, "Sum of props should add to 1, it now is %f" % sum(props)
-        return np.random.choice(landtypes, (n, m), p=props).astype(np.int8)
+        self.landuse = np.random.choice(landtypes, (n, m), p=props).astype(np.int8)
+
+    def setup_creative_space(self):
+        """create creative space to start based on density of creatives present,
+        assigns creative value, bumps up rent on creative-space
+        """
+        # TODO(rlouie): these pop count functions could be resuable, and dont seem specific to setup only
+        for patch, occupant_idxs in self.occupants.iteritems():
+            self.pop_count[patch] = len(occupant_idxs)
+            self.pop_count_cr_h[patch] = np.sum([self.agents[idx].creativity == 10 for idx in occupant_idxs])
+            self.pop_count_cr_m[patch] = np.sum([self.agents[idx].creativity == 5 for idx in occupant_idxs])
+            self.pop_count_cr[patch] = self.pop_count_cr_h[patch] + self.pop_count_cr_m[patch]
+
+            if self.pop_count_cr[patch] >= self.creative_dens_p:
+                # TODO(rlouie): update this conditional with patches related to outside neighborhoods (nlogo ln 222)
+                if self.allow_development:
+                    self.creative_space[patch] = 1
+                    self.rent_start[patch] *= 2
+                    self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
+
+        self.occupancy_start = self.pop_count
 
     def get_residential_neighbors(self, loc):
         residential = self.landuse == 1
@@ -87,8 +121,6 @@ class TransformingCity(Cell2D):
 
         self.agents = a
         self.occupants = occupants
-        print(a)
-        print(occupants)
 
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
@@ -124,6 +156,6 @@ class LandUseViewer(Cell2DViewer):
                       LU_GRAY: colors[5]})
     options = dict(interpolation='none', alpha=0.8)
 
-
-t = TransformingCity(10)
-t.step()
+if __name__ == '__main__':
+    t = TransformingCity(10)
+    t.step()
