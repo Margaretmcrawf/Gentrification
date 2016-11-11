@@ -81,7 +81,7 @@ class TransformingCity(Cell2D):
         assigns creative value, bumps up rent on creative-space
         """
         # TODO(rlouie): these pop count functions could be resuable, and dont seem specific to setup only
-        for patch, occupant_idxs in self.occupants.iteritems():
+        for patch, occupant_idxs in self.occupants.items():
             self.pop_count[patch] = len(occupant_idxs)
             self.pop_count_cr_h[patch] = np.sum([self.agents[idx].creativity == 10 for idx in occupant_idxs])
             self.pop_count_cr_m[patch] = np.sum([self.agents[idx].creativity == 5 for idx in occupant_idxs])
@@ -97,16 +97,23 @@ class TransformingCity(Cell2D):
         self.occupancy_start = self.pop_count
 
     def get_residential_neighbors(self, loc):
-        residential = self.landuse == 1
-        return residential
+        #TODO(mcrawford): figure out what a neighborhood means and sort on that
+        residential = self.landuse == LU_RESIDENTIAL # logical array
+        residential_locs = np.transpose(np.nonzero(residential))
+        return residential_locs
 
     def step(self):
-        a = agent.Agent((0, 0), education=False)
-        a.step(self, 20000)
+
+        for i, agent in enumerate(self.agents):
+            old_loc = agent.loc
+            new_loc = agent.step(self, 50000)
+            if new_loc:
+                self.occupants[new_loc].add(i)
+                self.occupants[old_loc].discard(i)
 
     def make_agents(self):
         a = []
-        occupants = defaultdict(list)
+        occupants = defaultdict(set)
         locs = TransformingCity.make_locs(self.n, self.m)
         residential = self.landuse == LU_RESIDENTIAL # logical array
         # TODO(rlouie): rename locs_where
@@ -117,7 +124,7 @@ class TransformingCity(Cell2D):
             ind = np.random.randint(len(residential_locs))
             loc = tuple(residential_locs[ind])
             a.append(agent.Agent(loc))
-            occupants[loc].append(i)
+            occupants[loc].add(i)
 
         self.agents = a
         self.occupants = occupants
@@ -156,6 +163,17 @@ class LandUseViewer(Cell2DViewer):
                       LU_GRAY: colors[5]})
     options = dict(interpolation='none', alpha=0.8)
 
+
+class PopulationViewer(Cell2DViewer):
+    colors = ['#fdc086', '#cd6302', '#d3d3d3']
+    cmap = make_cmap({1: colors[0],
+                      5: colors[1],
+                      0: colors[2]})
+    options = dict(interpolation='none', alpha=0.8)
+
+
+t = TransformingCity(10)
 if __name__ == '__main__':
     t = TransformingCity(10)
     t.step()
+
