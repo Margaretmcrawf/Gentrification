@@ -19,7 +19,7 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, avg_rent=12000, **kwargs):
+    def __init__(self, m, n=None, avg_rent=12000, start_pop=1000, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
@@ -53,7 +53,7 @@ class TransformingCity(Cell2D):
         self.displaced = set()
         self.displaced_history = []
 
-        self.make_agents()
+        self.initialize_agents(start_pop)
         self.setup_creative_space()
 
     @staticmethod
@@ -133,25 +133,28 @@ class TransformingCity(Cell2D):
                 self.rent_current[patch] *= 1.1
             elif self.creative_value[patch] >= 50:
                 self.rent_current[patch] *= 1.05
-        
-    def make_agents(self):
-        a = []
-        occupants = defaultdict(set)
-        locs = TransformingCity.make_locs(self.n, self.m)
-        residential = self.landuse == LU_RESIDENTIAL # logical array
-        # TODO(rlouie): rename locs_where
-        residential_locs = np.transpose(np.nonzero(residential))        
-        # residential_locs = [loc for loc in locs if self.landuse[loc] == LU_RESIDENTIAL]
 
-        for i in range(1000): #change to initializing number of agents...
+    def initialize_agents(self, n_agents_to_start):
+        self.agents = []
+        self.occupants = defaultdict(set)
+        self.locs = TransformingCity.make_locs(self.n, self.m)
+
+        self.add_agents(n_agents_to_start)
+
+    def add_agents(self, n_agents_to_add):
+        """
+        n_agents_to_add: number of agents to add
+        """
+        # determine which locations are fair game to move to (residential)
+        residential = self.landuse == LU_RESIDENTIAL # logical array
+        residential_locs = np.transpose(np.nonzero(residential))
+
+        current_n_agents = len(self.agents)
+        for idx in range(current_n_agents, current_n_agents + n_agents_to_add):
             ind = np.random.randint(len(residential_locs))
             loc = tuple(residential_locs[ind])
-            a.append(agent.Agent(loc))
-            occupants[loc].add(i)
-
-        self.agents = a
-        self.occupants = occupants
-
+            self.agents.append(agent.Agent(loc))
+            self.occupants[loc].add(idx)
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
     """Makes a custom color map.
