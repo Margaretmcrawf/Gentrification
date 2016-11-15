@@ -19,12 +19,12 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, p_subsidized=0, avg_rent=12000, **kwargs):
+    def __init__(self, m, n=None, p_subsidized=0, avg_rent=12000, start_pop=1000, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
         self.p_subsidized = p_subsidized #percentage of agents who can get subsidized housing
-
+        self.start_pop = start_pop
         self.allow_development = True
 
         # initialize cell values
@@ -54,7 +54,7 @@ class TransformingCity(Cell2D):
         self.displaced = set()
         self.displaced_history = []
 
-        self.make_agents()
+        self.initialize_agents(start_pop)
         self.setup_creative_space()
 
     @staticmethod
@@ -135,33 +135,41 @@ class TransformingCity(Cell2D):
             elif self.creative_value[patch] >= 50:
                 self.rent_current[patch] *= 1.05
 
-        
-    def make_agents(self):
-        a = []
-        occupants = defaultdict(set)
-        incomes = []
-        locs = TransformingCity.make_locs(self.n, self.m)
-        residential = self.landuse == LU_RESIDENTIAL # logical array
-        # TODO(rlouie): rename locs_where
-        residential_locs = np.transpose(np.nonzero(residential))        
-        # residential_locs = [loc for loc in locs if self.landuse[loc] == LU_RESIDENTIAL]
+    def initialize_agents(self, n_agents_to_start):
+        self.agents = []
+        self.incomes = []
+        self.occupants = defaultdict(set)
+        self.locs = TransformingCity.make_locs(self.n, self.m)
 
-        for i in range(1000): #change to initializing number of agents...
+        self.add_agents(n_agents_to_start)
+
+    def add_agents(self, n_agents_to_add):
+        """
+        n_agents_to_add: number of agents to add
+        """
+        # determine which locations are fair game to move to (residential)
+
+        residential = self.landuse == LU_RESIDENTIAL # logical array
+        residential_locs = np.transpose(np.nonzero(residential))
+
+        current_n_agents = len(self.agents)
+        for idx in range(current_n_agents, current_n_agents + n_agents_to_add):
             ind = np.random.randint(len(residential_locs))
             loc = tuple(residential_locs[ind])
-            a.append(agent.Agent(loc))
-            occupants[loc].add(i)
-            incomes.append(a[i].income)
 
-        self.agents = a
-        self.occupants = occupants
+            self.agents.append(agent.Agent(loc))
+            self.occupants[loc].add(idx)
+            self.incomes.append(self.agents[idx].income)
 
+        threshold = self.get_subsidization_threshold()
         #update the is_subsidized bool for the agents who qualify.
-        incomes = sorted(incomes)
-        threshold = incomes[int(self.p_subsidized*1000)]
-        for ag in a:
-            if ag.income <= threshold:
-                ag.is_subsidized = True
+        for idx in range(current_n_agents, current_n_agents + n_agents_to_add):
+            if self.agents[idx].income <= threshold:
+                self.agents[idx].is_subsidized = True
+
+    def get_subsidization_threshold(self):
+        incomes = sorted(self.incomes)
+        return incomes[int(self.p_subsidized*len(self.incomes))]
 
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
