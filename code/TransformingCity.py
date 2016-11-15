@@ -19,7 +19,7 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, p_subsidized=0, avg_rent=12000, start_pop=1000, **kwargs):
+    def __init__(self, m, n=None, p_subsidized=0.0, avg_rent=12000, start_pop=1000, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
@@ -57,20 +57,6 @@ class TransformingCity(Cell2D):
         self.initialize_agents(start_pop)
         self.setup_creative_space()
 
-    @staticmethod
-    def make_locs(n, m):
-        """Makes array where each row is an index in an `n` by `m` grid.
-        
-        n: int number of rows
-        m: int number of cols
-        
-        returns: NumPy array
-        """
-        left = np.repeat(np.arange(m), n)
-        right = np.tile(np.arange(n), m)
-        return np.transpose([left, right])
-
-
     def setup_landuse(self, landtypes, props, m, n):
         """
         landtypes: list/tuple, integer values
@@ -100,7 +86,6 @@ class TransformingCity(Cell2D):
         self.occupancy_start = self.pop_count
 
     def get_residential_neighbors(self, loc):
-        #TODO(mcrawford): figure out what a neighborhood means and sort on that
         residential = self.landuse == LU_RESIDENTIAL # logical array
         residential_locs = np.transpose(np.nonzero(residential))
         return residential_locs
@@ -139,7 +124,6 @@ class TransformingCity(Cell2D):
         self.agents = []
         self.incomes = []
         self.occupants = defaultdict(set)
-        self.locs = TransformingCity.make_locs(self.n, self.m)
 
         self.add_agents(n_agents_to_start)
 
