@@ -19,7 +19,7 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, **kwargs):
+    def __init__(self, m, n=None, avg_rent=12000, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
@@ -34,7 +34,7 @@ class TransformingCity(Cell2D):
         self.occupancy_start = None
         self.percent_full = np.zeros((m,n), np.float)
         self.rent_start = np.ones((m, n))
-        self.rent_current = np.ones((m, n))
+        self.rent_current = np.random.normal(avg_rent, avg_rent/4, (m,n))
         self.creative_space = np.zeros((m,n), np.bool)
         self.creative_value = np.zeros((m,n))
         self.creative_dens_p = 3 # threshold that defines how many creative people it takes to define a patch as a creative space
@@ -50,6 +50,8 @@ class TransformingCity(Cell2D):
         self.pop_count_cr_diff = np.zeros((m,n)) # diff of count of creative pop to current count of creative pop if negative then gained value, otherwise decrease
         # TODO(rlouie): if this is a factor, should it just be a single number and not a number for each cell?
         self.pop_count_cr_minus = np.zeros((m,n)) # factor to subtract for loss of creative value
+        self.displaced = set()
+        self.displaced_history = []
 
         self.make_agents()
         self.setup_creative_space()
@@ -106,11 +108,32 @@ class TransformingCity(Cell2D):
 
         for i, agent in enumerate(self.agents):
             old_loc = agent.loc
-            new_loc = agent.step(self, 50000)
+            new_loc = agent.step(self, self.rent_current[old_loc])
             if new_loc:
                 self.occupants[new_loc].add(i)
                 self.occupants[old_loc].discard(i)
+                if i not in self.displaced:
+                    self.displaced.add(i)
+        self.displaced_history.append(len(self.displaced))
 
+        #update the populations.
+        for patch, occupant_idxs in self.occupants.items():
+            self.pop_count[patch] = len(occupant_idxs)
+            self.pop_count_cr_h[patch] = np.sum([self.agents[idx].creativity == 10 for idx in occupant_idxs])
+            self.pop_count_cr_m[patch] = np.sum([self.agents[idx].creativity == 5 for idx in occupant_idxs])
+            self.pop_count_cr[patch] = self.pop_count_cr_h[patch] + self.pop_count_cr_m[patch]
+
+            self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
+
+            if self.creative_value[patch] >= 500:
+                self.rent_current[patch] *= 2
+            elif self.creative_value[patch] >= 300:
+                self.rent_current[patch] *= 1.5
+            elif self.creative_value[patch] >= 100:
+                self.rent_current[patch] *= 1.1
+            elif self.creative_value[patch] >= 50:
+                self.rent_current[patch] *= 1.05
+        
     def make_agents(self):
         a = []
         occupants = defaultdict(set)
@@ -120,7 +143,7 @@ class TransformingCity(Cell2D):
         residential_locs = np.transpose(np.nonzero(residential))        
         # residential_locs = [loc for loc in locs if self.landuse[loc] == LU_RESIDENTIAL]
 
-        for i in range(400): #change to initializing number of agents...
+        for i in range(1000): #change to initializing number of agents...
             ind = np.random.randint(len(residential_locs))
             loc = tuple(residential_locs[ind])
             a.append(agent.Agent(loc))
@@ -172,8 +195,8 @@ class PopulationViewer(Cell2DViewer):
     options = dict(interpolation='none', alpha=0.8)
 
 
-t = TransformingCity(10)
 if __name__ == '__main__':
     t = TransformingCity(10)
     t.step()
+
 
