@@ -19,10 +19,11 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, avg_rent=12000, **kwargs):
+    def __init__(self, m, n=None, p_subsidized=0, avg_rent=12000, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
+        self.p_subsidized = p_subsidized #percentage of agents who can get subsidized housing
 
         self.allow_development = True
 
@@ -133,10 +134,12 @@ class TransformingCity(Cell2D):
                 self.rent_current[patch] *= 1.1
             elif self.creative_value[patch] >= 50:
                 self.rent_current[patch] *= 1.05
+
         
     def make_agents(self):
         a = []
         occupants = defaultdict(set)
+        incomes = []
         locs = TransformingCity.make_locs(self.n, self.m)
         residential = self.landuse == LU_RESIDENTIAL # logical array
         # TODO(rlouie): rename locs_where
@@ -148,9 +151,17 @@ class TransformingCity(Cell2D):
             loc = tuple(residential_locs[ind])
             a.append(agent.Agent(loc))
             occupants[loc].add(i)
+            incomes.append(a[i].income)
 
         self.agents = a
         self.occupants = occupants
+
+        #update the is_subsidized bool for the agents who qualify.
+        incomes = sorted(incomes)
+        threshold = incomes[int(self.p_subsidized*1000)]
+        for ag in a:
+            if ag.income <= threshold:
+                ag.is_subsidized = True
 
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
