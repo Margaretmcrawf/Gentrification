@@ -6,7 +6,7 @@ import scipy.special as sps
 
 class Agent:
 
-	def __init__(self, loc, education=False):
+	def __init__(self, loc, education=False, avg_income = 50000):
 		""" From NetLogo code: assign creativity (assume creatives have a little more income, but high creatives have much more)"""
 
 		self.creativity = np.random.choice([1,5,10], p=[0.8, 0.1, 0.1]) # 1 is low, 5 is medium, 10 is high
@@ -14,13 +14,15 @@ class Agent:
 		self.loc = tuple(loc)
 
 		#determine initial income, which is a random value in a gamma dist. 
-		shape = 5 #centered at 50,000 subject to change
-		self.income = round(np.random.gamma(shape)*10000)
+		# shape = 5 #centered at 50,000 subject to change
+		self.income = round(np.random.gamma(avg_income/10000)*10000)
 
 		if self.creativity == 5:
 			self.income *= 1.1
 		elif self.creativity == 10:
 			self.income *= 1.5
+
+		self.is_subsidized = False
 
 	def step(self, env, rent):
 		# returns whether the agent is satisfied, based on whether it can afford rent,
@@ -29,9 +31,13 @@ class Agent:
 
 		neighbs = env.get_residential_neighbors(self.loc)
 
+		if self.is_subsidized: #rent is cheaper for subsidized agents.
+			rent = rent/2
+
 		if rent > (self.income/4):
 			self.loc = tuple(neighbs[np.random.randint(len(neighbs))])
 			return self.loc
+
 		return False
 
 	def update_creativity(self, env):
