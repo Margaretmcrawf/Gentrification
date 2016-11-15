@@ -14,7 +14,6 @@ class Agent:
 		self.loc = tuple(loc)
 
 		#determine initial income, which is a random value in a gamma dist. 
-		# shape = 5 #centered at 50,000 subject to change
 		self.income = round(np.random.gamma(avg_income/10000)*10000)
 
 		if self.creativity == 5:
