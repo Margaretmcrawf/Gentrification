@@ -51,6 +51,9 @@
 	The city I used was a 10 by 10 grid, with the average rent starting at 12000 currency units and the population of agents totaling 1000.  The number of individuals required to label a cell as creative was just 3.
 
 	Results: Below is several graphs, where a city is initialized with particular agents.  Then the scenario is played through for 50 timesteps. 
+	![](imgs/p_creative_space_subnosub_1.png) | ![](imgs/p_creative_space_subnosub_2.png)
+	:--------------------------------:|:-----------------------------------:
+	![](imgs/p_creative_space_subnosub_3.png)| ![](imgs/p_creative_space_subnosub_4.png)
 
 	Intepretation: Note that these are across multiple trials.  Since the distribution of agents across the residential cells is random, we can expect the percent of creative space to also be random
 
@@ -63,6 +66,7 @@
 	It would make sense, that with subsidization, more agents are happy and are not being displaced by rent hikes.  This would also explain the reduced variation in the percent of creative space graphs, discussed above.
 
 	Results:
+	![](imgs/num_move_this_step_1.png) | ![](imgs/num_move_this_step_2.png)
 
 	The number of agents moving per timestep, over 50 time steps.  There is intense moving at the beginning, due to the fact that probably many poor agents are initialized in regions where rent is high.  
 
@@ -73,9 +77,9 @@
 	Interestingly, we can look at both how movement of people are viewed in a city as well as the effect on changes in the percentage of creative space. Below, subsidization provides a benefit in both regards. Again, disclaimer that this is one trial and the numbers are no way indicative of a larger trend.  The sensitvity to randomness is something we aim to fix in the model in order to study these policy decisions better.
 
 	change in % of creative space in unsubsidized city: -1.6 %
-
 	change in % of creative space in 50% subsidized city: 3.0 %
 
+	![](imgs/num_move_this_step_3.png)
 
 
 
