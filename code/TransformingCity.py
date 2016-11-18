@@ -53,6 +53,8 @@ class TransformingCity(Cell2D):
         self.pop_count_cr_minus = np.zeros((m,n)) # factor to subtract for loss of creative value
         self.displaced = set()
         self.displaced_history = []
+        self.p_creative_space_history = []
+        self.num_displaced_this_step_history = []
 
         self.initialize_agents(start_pop)
         self.setup_creative_space()
@@ -92,6 +94,7 @@ class TransformingCity(Cell2D):
 
     def step(self):
 
+        num_displaced_this_step = 0
         for i, agent in enumerate(self.agents):
             old_loc = agent.loc
             new_loc = agent.step(self, self.rent_current[old_loc])
@@ -100,7 +103,9 @@ class TransformingCity(Cell2D):
                 self.occupants[old_loc].discard(i)
                 if i not in self.displaced:
                     self.displaced.add(i)
+                num_displaced_this_step += 1
         self.displaced_history.append(len(self.displaced))
+        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
         #update the populations.
         for patch, occupant_idxs in self.occupants.items():
@@ -108,6 +113,11 @@ class TransformingCity(Cell2D):
             self.pop_count_cr_h[patch] = np.sum([self.agents[idx].creativity == 10 for idx in occupant_idxs])
             self.pop_count_cr_m[patch] = np.sum([self.agents[idx].creativity == 5 for idx in occupant_idxs])
             self.pop_count_cr[patch] = self.pop_count_cr_h[patch] + self.pop_count_cr_m[patch]
+
+            if self.pop_count_cr[patch] >= self.creative_dens_p:
+                self.creative_space[patch] = 1
+            else:
+                self.creative_space[patch] = 0
 
             self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
 
@@ -119,6 +129,8 @@ class TransformingCity(Cell2D):
                 self.rent_current[patch] *= 1.1
             elif self.creative_value[patch] >= 50:
                 self.rent_current[patch] *= 1.05
+
+        self.p_creative_space_history.append(self.measure_p_creative_space())
 
     def initialize_agents(self, n_agents_to_start):
         self.agents = []
@@ -155,6 +167,10 @@ class TransformingCity(Cell2D):
         incomes = sorted(self.incomes)
         return incomes[int(self.p_subsidized*len(self.incomes))]
 
+    def measure_p_creative_space(self):
+        """Returns percentage of residential cells that are creative spaces"""
+        residential = self.landuse == LU_RESIDENTIAL # logical array
+        return float(np.sum(self.creative_space)) / np.sum(residential)
 
 def make_cmap(color_dict, vmax=None, name='mycmap'):
     """Makes a custom color map.
