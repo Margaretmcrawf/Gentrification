@@ -87,6 +87,10 @@
 
 	![](imgs/num_move_this_step_3.png)
 
+6. 	We still need to create graphs comparing effectiveness at curbing gentrification and creativity of population. 
+
+	![](imgs/cartoon_gentr_vs_creative.JPG)
+
 7. 
 	Margo’s Learning Goals: I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I’d like to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important. 
 
