@@ -19,7 +19,7 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, p_subsidized=0.0, avg_rent=12000, start_pop=1000, sub_housing_rate = 0.50 **kwargs):
+    def __init__(self, m, n=None, p_subsidized=0.0, avg_rent=12000, start_pop=1000, sub_housing_rate = 0.50, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
