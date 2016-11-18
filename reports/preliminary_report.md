@@ -32,6 +32,7 @@
 	Results: The results graphs are shown below.
 
 	![](imgs/normalized_displacement_1.png) | ![](imgs/normalized_displacement_2.png)
+	:--------------------------------:|:-----------------------------------:
 
 	Interpretation: Results for several trials have not shown a conclusive trend in rate of displacement, although we would need to perform many trials and get quantitative data on the slopes (probably through linear regression) to see if there is a more subtle difference in rates. 
 
@@ -39,11 +40,14 @@
 
 	Methodology: We tried by giving renters who get subsidized housing different levels of subsidization. Those agents paid 25, 50, or 75% of the market rate in rent. We then observed the displacement over time.
 
-	Results: The results showed that the model wasn’t very sensitive to the change in subsidisation rate. Shown here are graphs for different random seeds, which show that the slopes are pretty inconclusive. 
+	Results: 
 
 	![](imgs/subsidisation_rates.png) | ![](imgs/subsidisation_rates_2.png)
 	:--------------------------------:|:-----------------------------------:
 	![](imgs/subsidisation_rate_3.png)| ![](imgs/subsidisation_rate_4.png)
+
+	Interpretation:
+	The results showed that the model wasn’t very sensitive to the change in subsidisation rate compared to other factors. Shown here are graphs for different random seeds, which show that at times, more agents are displaced when they pay 25% rent than 75% rent. This doesn't fit with what we'd expect, which shows that our model needs refining.
 
 	Question: How does subsidization affect the diffusion of creativity in a city?  
 	Methodology:  The two settings we compared for subsidization was 0% of the population and 50% of the population being on 50% subsidization on their rent.  For the metric of creavity spread in a city, we used the % of residential cells that are “creative spaces”, defined as having X number of creative agents living in the cell.  
@@ -82,6 +86,12 @@
 	change in % of creative space in 50% subsidized city: 3.0 %
 
 	![](imgs/num_move_this_step_3.png)
+
+7. 
+	Margo’s Learning Goals: I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I’d like to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important. 
+
+	Ryan’s Learning Goals: I would like to practice on my creation and delivery of compelling punchline graphs. This project will help me, because one of our extensions will be ensuring that the punchline stays the same, despite simplifications of the model.  In addition, since we plan to explore the relationship between gentrification and movement of creativity into a city, we will need to generate novel punchlines too.  Finally, I am generally curious about the topic of technology/creativity in cities interacts with the uprooting of poorer households.  I will be satisfied with more real-world theory and understanding If I can learn about the theory in this field, and some strategies cities are thinking about to achieve desirable outcomes to balance these two.
+
 
 
 
