@@ -54,6 +54,7 @@ class TransformingCity(Cell2D):
         self.displaced = set()
         self.displaced_history = []
         self.p_creative_space_history = []
+        self.num_displaced_this_step_history = []
 
         self.initialize_agents(start_pop)
         self.setup_creative_space()
@@ -93,6 +94,7 @@ class TransformingCity(Cell2D):
 
     def step(self):
 
+        num_displaced_this_step = 0
         for i, agent in enumerate(self.agents):
             old_loc = agent.loc
             new_loc = agent.step(self, self.rent_current[old_loc])
@@ -101,7 +103,9 @@ class TransformingCity(Cell2D):
                 self.occupants[old_loc].discard(i)
                 if i not in self.displaced:
                     self.displaced.add(i)
+                num_displaced_this_step += 1
         self.displaced_history.append(len(self.displaced))
+        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
         #update the populations.
         for patch, occupant_idxs in self.occupants.items():
