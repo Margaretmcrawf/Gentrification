@@ -51,6 +51,7 @@
 	The city I used was a 10 by 10 grid, with the average rent starting at 12000 currency units and the population of agents totaling 1000.  The number of individuals required to label a cell as creative was just 3.
 
 	Results: Below is several graphs, where a city is initialized with particular agents.  Then the scenario is played through for 50 timesteps. 
+
 	![](imgs/p_creative_space_subnosub_1.png) | ![](imgs/p_creative_space_subnosub_2.png)
 	:--------------------------------:|:-----------------------------------:
 	![](imgs/p_creative_space_subnosub_3.png)| ![](imgs/p_creative_space_subnosub_4.png)
@@ -66,6 +67,7 @@
 	It would make sense, that with subsidization, more agents are happy and are not being displaced by rent hikes.  This would also explain the reduced variation in the percent of creative space graphs, discussed above.
 
 	Results:
+
 	![](imgs/num_move_this_step_1.png) | ![](imgs/num_move_this_step_2.png)
 
 	The number of agents moving per timestep, over 50 time steps.  There is intense moving at the beginning, due to the fact that probably many poor agents are initialized in regions where rent is high.  
