@@ -25,20 +25,25 @@
 	The third experiment was how subsidization effects the creativity value of cells. In the NetLogo model, we observed a lot of clustering of creative agents in certain cells. Since creative agents earn more, they may live in squares that low creative agents can’t afford. We’d like to know if and how adding subsidized housing changes the distribution of creativity.
 
 5. 
-	Question: Does subsidization affect the rate of displacement of original renters? We started by giving some renters 50% subsidization on their housing.
+	__Question: Does a small number of agents getting subsidisation affect the rate of displacement of original renters?__
 
-	Methodology: The model takes in an optional input of percentage of agents who get subsidized housing. Then, the lowest income residents are given subsidized housing, which means that they pay a below market rate, 50% of the rate by default. Since agents move when they can't afford rent, we thought there would be less movement when we subsidized more agents. To see the difference, we assigned the subsidized housing percentage to 10%. Two graphs are shown below, both showing displacement over time for cities with and without subsidized housing. They were normalized by subtracting the initial values, because some runs of the model randomly assign more poor agents to high rent patches, so the displacement in the first time step is very high.
+	Methodology: The model takes in an optional input of percentage of agents who get subsidized housing. Then, the lowest income residents are given subsidized housing, which means that they pay a below market rate, 50% of the rate by default. Since agents move when they can't afford rent, we thought there would be less movement when we subsidized more agents. To see the difference, we assigned the subsidized housing percentage to 10%. Two graphs are shown below, both showing displacement over time for cities with and without subsidized housing. They were normalized by subtracting the initial values, because some runs of the model randomly assign more poor agents to high rent patches, so the displacement in the first time step is very high. We also took linear regressions for 100 runs of each scenario.
 
 	Results: The results graphs are shown below.
 
 	![](imgs/normalized_displacement_1.png) | ![](imgs/normalized_displacement_2.png)
 	:--------------------------------:|:-----------------------------------:
 
-	Interpretation: Results for several trials have not shown a conclusive trend in rate of displacement, although we would need to perform many trials and get quantitative data on the slopes (probably through linear regression) to see if there is a more subtle difference in rates. 
+	Linear Regressions:
 
-	Question: Does different levels of subsidization affect the outcomes of displacement in neighborhoods?  
+			slope of unsubsidized displacement: 19.4279172932
+			slope of subsidized displacement: 20.4306842105
 
-	Methodology: We tried by giving renters who get subsidized housing different levels of subsidization. Those agents paid 25, 50, or 75% of the market rate in rent. We then observed the displacement over time.
+	Interpretation: Individual graphs show a lot of variation in slope, but from our linear regression it seems clear that subsidisation has no positive effect on rate of displacement, although it seems to make a difference in displacement in the first time step.
+
+	__Question: Does different levels of subsidization affect the outcomes of displacement in neighborhoods?__
+
+	Methodology: We tried by giving renters who get subsidized housing different levels of subsidization. Those agents paid 25, 50, or 75% of the market rate in rent. We then observed the displacement over time. We took linear regressions for 100 trials of each.
 
 	Results: 
 
@@ -46,10 +51,16 @@
 	:--------------------------------:|:-----------------------------------:
 	![](imgs/subsidisation_rate_3.png)| ![](imgs/subsidisation_rate_4.png)
 
-	Interpretation:
-	The results showed that the model wasn’t very sensitive to the change in subsidisation rate compared to other factors. Shown here are graphs for different random seeds, which show that at times, more agents are displaced when they pay 25% rent than 75% rent. This doesn't fit with what we'd expect, which shows that our model needs refining.
+			slope of 25% market rate rent:16.3993308271
+			slope of 50% market rate rent:26.487075188
+			slope of 75% market rate rent:26.4622631579
 
-	Question: How does subsidization affect the diffusion of creativity in a city?  
+	Interpretation:
+	The graphical results don't show anything conclusive about whether amount of subsidisation makes a difference. 
+	However, when we did a linear regression of 100 runs for each of the subsidization rates, we found that the average slope for 25% was much lower than those for 50% and 75%, which means people are displaced at a much lower rate. It seems that very low rental rates do make a significant difference.
+
+	__Question: How does subsidization affect the diffusion of creativity in a city?__
+
 	Methodology:  The two settings we compared for subsidization was 0% of the population and 50% of the population being on 50% subsidization on their rent.  For the metric of creavity spread in a city, we used the % of residential cells that are “creative spaces”, defined as having X number of creative agents living in the cell.  
 
 	The city I used was a 10 by 10 grid, with the average rent starting at 12000 currency units and the population of agents totaling 1000.  The number of individuals required to label a cell as creative was just 3.
@@ -66,7 +77,7 @@
 
 	In addition, the graph for subsidized agents has a smaller variation.  This corresponds to smaller changes in the percent of creative spaces per time step.  This could be correlated to less movement of agents around, which shuffle the distributions of creative people over creative space.
 
-	Question: Do more agents move when there is no subsidized housing?  
+	__Question: Do more agents move when there is no subsidized housing?__
 
 	It would make sense, that with subsidization, more agents are happy and are not being displaced by rent hikes.  This would also explain the reduced variation in the percent of creative space graphs, discussed above.
 
