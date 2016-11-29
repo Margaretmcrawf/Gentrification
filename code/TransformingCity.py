@@ -35,8 +35,8 @@ class TransformingCity(Cell2D):
         self.pop_dens = np.zeros((m,n))
         self.occupancy_start = None
         self.percent_full = np.zeros((m,n), np.float)
-        self.rent_start = np.ones((m, n))
         self.rent_current = np.random.normal(avg_rent, avg_rent/4, (m,n))
+        self.rent_start = np.copy(self.rent_current)
         self.creative_space = np.zeros((m,n), np.bool)
         self.creative_value = np.zeros((m,n))
         self.creative_dens_p = 3 # threshold that defines how many creative people it takes to define a patch as a creative space
@@ -95,18 +95,6 @@ class TransformingCity(Cell2D):
 
     def step(self):
 
-        num_displaced_this_step = 0
-        for i, agent in enumerate(self.agents):
-            old_loc = agent.loc
-            new_loc = agent.step(self, self.rent_current[old_loc])
-            if new_loc:
-                self.occupants[new_loc].add(i)
-                self.occupants[old_loc].discard(i)
-                if i not in self.displaced:
-                    self.displaced.add(i)
-                num_displaced_this_step += 1
-        self.displaced_history.append(len(self.displaced))
-        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
         #update the populations.
         for patch, occupant_idxs in self.occupants.items():
@@ -123,23 +111,36 @@ class TransformingCity(Cell2D):
             self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
 
             if self.creative_value[patch] >= 500:
-                self.rent_current[patch] *= 2
+                self.rent_start[patch] *= 2
             elif self.creative_value[patch] >= 300:
-                self.rent_current[patch] *= 1.5
+                self.rent_start[patch] *= 1.5
             elif self.creative_value[patch] >= 100:
-                self.rent_current[patch] *= 1.1
+                self.rent_start[patch] *= 1.1
             elif self.creative_value[patch] >= 50:
-                self.rent_current[patch] *= 1.05
+                self.rent_start[patch] *= 1.05
             elif self.creative_value[patch] >=30:
-                self.rent_current[patch] *= 0.95
+                self.rent_start[patch] *= 0.95
             elif self.creative_value[patch] >= 20:
-                self.rent_current[patch] *= 0.91
+                self.rent_start[patch] *= 0.91
             elif self.creative_value[patch] >= 10:
-                self.rent_current[patch] *= 0.67
+                self.rent_start[patch] *= 0.67
             else:
-                self.rent_current[patch] *= 0.5
+                self.rent_start[patch] *= 0.5
 
         self.p_creative_space_history.append(self.measure_p_creative_space())
+
+        num_displaced_this_step = 0
+        for i, agent in enumerate(self.agents):
+            old_loc = agent.loc
+            new_loc = agent.step(self, self.rent_current[old_loc])
+            if new_loc:
+                self.occupants[new_loc].add(i)
+                self.occupants[old_loc].discard(i)
+                if i not in self.displaced:
+                    self.displaced.add(i)
+                num_displaced_this_step += 1
+        self.displaced_history.append(len(self.displaced))
+        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
     def initialize_agents(self, n_agents_to_start):
         self.agents = []

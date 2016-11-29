@@ -34,13 +34,17 @@ class Agent:
 		if self.is_subsidized: #rent is cheaper for subsidized agents.
 			rent *= self.sub_housing_rate
 
-		if rent > (self.income/4):
+		if rent > (self.income/4): #if rent is too high
+			self.loc = tuple(neighbs[np.random.randint(len(neighbs))])
+			return self.loc
+
+		if env.creative_space[self.loc] == 0 and self.creativity == 10: #if the patch isn't creative and the agent is very creative, move
 			self.loc = tuple(neighbs[np.random.randint(len(neighbs))])
 			return self.loc
 
 		return False
 
-	def update_creativity(self, env):
+	def update_creativity(self, env): 
 		#if there are lots of creative neighbors, increase creativity.
 		pass
 
