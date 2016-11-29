@@ -130,6 +130,14 @@ class TransformingCity(Cell2D):
                 self.rent_current[patch] *= 1.1
             elif self.creative_value[patch] >= 50:
                 self.rent_current[patch] *= 1.05
+            elif self.creative_value[patch] >=30:
+                self.rent_current[patch] *= 0.95
+            elif self.creative_value[patch] >= 20:
+                self.rent_current[patch] *= 0.91
+            elif self.creative_value[patch] >= 10:
+                self.rent_current[patch] *= 0.67
+            else:
+                self.rent_current[patch] *= 0.5
 
         self.p_creative_space_history.append(self.measure_p_creative_space())
 
