@@ -19,14 +19,18 @@ LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
 
 class TransformingCity(Cell2D):
 
-    def __init__(self, m, n=None, p_subsidized=0.0, avg_rent=12000, start_pop=1000, sub_housing_rate = 0.50, **kwargs):
+    def __init__(self, m, n=None, p_subsidized=0.0, avg_rent=12000, start_pop=1000, sub_housing_rate = 0.50, random_seed=None, **kwargs):
         n = m if n is None else n
         self.m = m
         self.n = n
         self.p_subsidized = p_subsidized #percentage of agents who can get subsidized housing
         self.start_pop = start_pop
         self.allow_development = True
+        self.random_seed = random_seed
         self.sub_housing_rate = sub_housing_rate
+
+        # Seed random number generator for initialization
+        np.random.seed(self.random_seed)
 
         # initialize cell values
         self.setup_landuse(range(7), LU_PROPS, m, n)
@@ -35,8 +39,8 @@ class TransformingCity(Cell2D):
         self.pop_dens = np.zeros((m,n))
         self.occupancy_start = None
         self.percent_full = np.zeros((m,n), np.float)
-        self.rent_start = np.ones((m, n))
         self.rent_current = np.random.normal(avg_rent, avg_rent/4, (m,n))
+        self.rent_start = np.copy(self.rent_current)
         self.creative_space = np.zeros((m,n), np.bool)
         self.creative_value = np.zeros((m,n))
         self.creative_dens_p = 3 # threshold that defines how many creative people it takes to define a patch as a creative space
@@ -59,6 +63,10 @@ class TransformingCity(Cell2D):
 
         self.initialize_agents(start_pop)
         self.setup_creative_space()
+        
+        # Reinitialize the random number generator
+        # Everything after initialization will be non-seeded
+        np.random.seed(None)
 
     def setup_landuse(self, landtypes, props, m, n):
         """
@@ -123,13 +131,13 @@ class TransformingCity(Cell2D):
             self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
 
             if self.creative_value[patch] >= 500:
-                self.rent_current[patch] *= 2
+                self.rent_current[patch] = 2 * self.rent_start[patch]
             elif self.creative_value[patch] >= 300:
-                self.rent_current[patch] *= 1.5
+                self.rent_current[patch] = 1.5 * self.rent_start[patch]
             elif self.creative_value[patch] >= 100:
-                self.rent_current[patch] *= 1.1
+                self.rent_current[patch] = 1.1 * self.rent_start[patch]
             elif self.creative_value[patch] >= 50:
-                self.rent_current[patch] *= 1.05
+                self.rent_current[patch] = 1.05 * self.rent_start[patch]
 
         self.p_creative_space_history.append(self.measure_p_creative_space())
 
