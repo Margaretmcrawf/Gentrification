@@ -37,6 +37,8 @@ class TransformingCity(Cell2D):
         self.percent_full = np.zeros((m,n), np.float)
         self.rent_current = np.random.normal(avg_rent, avg_rent/4, (m,n))
         self.rent_start = np.copy(self.rent_current)
+        self.rent_diff = np.zeros((m,n))
+
         self.creative_space = np.zeros((m,n), np.bool)
         self.creative_value = np.zeros((m,n))
         self.creative_dens_p = 3 # threshold that defines how many creative people it takes to define a patch as a creative space
@@ -111,21 +113,23 @@ class TransformingCity(Cell2D):
             self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
 
             if self.creative_value[patch] >= 500:
-                self.rent_start[patch] *= 2
+                self.rent_current[patch] = self.rent_start[patch] * 2
             elif self.creative_value[patch] >= 300:
-                self.rent_start[patch] *= 1.5
+                self.rent_current[patch] = self.rent_start[patch] * 1.5
             elif self.creative_value[patch] >= 100:
-                self.rent_start[patch] *= 1.1
+                self.rent_current[patch] = self.rent_start[patch] * 1.1
             elif self.creative_value[patch] >= 50:
-                self.rent_start[patch] *= 1.05
-            elif self.creative_value[patch] >=30:
-                self.rent_start[patch] *= 0.95
+                self.rent_current[patch] = self.rent_start[patch] * 1.05
+            elif self.creative_value[patch] >=40:
+                self.rent_current[patch] = self.rent_start[patch] * 0.95
             elif self.creative_value[patch] >= 20:
-                self.rent_start[patch] *= 0.91
+                self.rent_current[patch] = self.rent_start[patch] * 0.91
             elif self.creative_value[patch] >= 10:
-                self.rent_start[patch] *= 0.67
+                self.rent_current[patch] = self.rent_start[patch] * 0.67
             else:
-                self.rent_start[patch] *= 0.5
+                self.rent_current[patch] = self.rent_start[patch] * 0.5
+
+        self.rent_diff = np.subtract(self.rent_current, self.rent_start)
 
         self.p_creative_space_history.append(self.measure_p_creative_space())
 
@@ -221,6 +225,15 @@ class PopulationViewer(Cell2DViewer):
     cmap = make_cmap({1: colors[0],
                       5: colors[1],
                       0: colors[2]})
+    options = dict(interpolation='none', alpha=0.8)
+
+class RentViewer(Cell2DViewer):
+    colors = ['#264876', '#32609d', '#3f78c2', '#6693ce', '#ffffff']
+    cmap = make_cmap({4:colors[0],
+                      3:colors[1],
+                      2:colors[2],
+                      1:colors[3],
+                      0:colors[4]})
     options = dict(interpolation='none', alpha=0.8)
 
 

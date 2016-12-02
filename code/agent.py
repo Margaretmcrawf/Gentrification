@@ -38,7 +38,7 @@ class Agent:
 			self.loc = tuple(neighbs[np.random.randint(len(neighbs))])
 			return self.loc
 
-		if env.creative_space[self.loc] == 0 and self.creativity == 10: #if the patch isn't creative and the agent is very creative, move
+		if env.creative_space[self.loc] == 0 and self.creativity >= 5: #if the patch isn't creative and the agent is m or h-creative, move
 			self.loc = tuple(neighbs[np.random.randint(len(neighbs))])
 			return self.loc
 
