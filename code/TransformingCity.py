@@ -41,6 +41,9 @@ class TransformingCity(Cell2D):
         self.percent_full = np.zeros((m,n), np.float)
         self.rent_current = np.random.normal(avg_rent, avg_rent/4, (m,n))
         self.rent_start = np.copy(self.rent_current)
+
+        self.rent_diff = np.zeros((m,n))
+
         self.creative_space = np.zeros((m,n), np.bool)
         self.creative_value = np.zeros((m,n))
         self.creative_dens_p = 3 # threshold that defines how many creative people it takes to define a patch as a creative space
@@ -103,18 +106,6 @@ class TransformingCity(Cell2D):
 
     def step(self):
 
-        num_displaced_this_step = 0
-        for i, agent in enumerate(self.agents):
-            old_loc = agent.loc
-            new_loc = agent.step(self, self.rent_current[old_loc])
-            if new_loc:
-                self.occupants[new_loc].add(i)
-                self.occupants[old_loc].discard(i)
-                if i not in self.displaced:
-                    self.displaced.add(i)
-                num_displaced_this_step += 1
-        self.displaced_history.append(len(self.displaced))
-        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
         #update the populations.
         for patch, occupant_idxs in self.occupants.items():
@@ -139,7 +130,22 @@ class TransformingCity(Cell2D):
             elif self.creative_value[patch] >= 50:
                 self.rent_current[patch] = 1.05 * self.rent_start[patch]
 
+        self.rent_diff = np.subtract(self.rent_current, self.rent_start)
+
         self.p_creative_space_history.append(self.measure_p_creative_space())
+
+        num_displaced_this_step = 0
+        for i, agent in enumerate(self.agents):
+            old_loc = agent.loc
+            new_loc = agent.step(self, self.rent_current[old_loc])
+            if new_loc:
+                self.occupants[new_loc].add(i)
+                self.occupants[old_loc].discard(i)
+                if i not in self.displaced:
+                    self.displaced.add(i)
+                num_displaced_this_step += 1
+        self.displaced_history.append(len(self.displaced))
+        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
     def initialize_agents(self, n_agents_to_start):
         self.agents = []
@@ -220,6 +226,15 @@ class PopulationViewer(Cell2DViewer):
     cmap = make_cmap({1: colors[0],
                       5: colors[1],
                       0: colors[2]})
+    options = dict(interpolation='none', alpha=0.8)
+
+class RentViewer(Cell2DViewer):
+    colors = ['#264876', '#32609d', '#3f78c2', '#6693ce', '#ffffff']
+    cmap = make_cmap({4:colors[0],
+                      3:colors[1],
+                      2:colors[2],
+                      1:colors[3],
+                      0:colors[4]})
     options = dict(interpolation='none', alpha=0.8)
 
 
