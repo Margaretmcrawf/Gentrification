@@ -107,7 +107,19 @@ class TransformingCity(Cell2D):
 
     def step(self):
 
-
+        num_displaced_this_step = 0
+        for i, agent in enumerate(self.agents):
+            old_loc = agent.loc
+            new_loc = agent.step(self, self.rent_current[old_loc])
+            if new_loc:
+                self.occupants[new_loc].add(i)
+                self.occupants[old_loc].discard(i)
+                if i not in self.displaced:
+                    self.displaced.add(i)
+                num_displaced_this_step += 1
+        self.displaced_history.append(len(self.displaced))
+        self.num_displaced_this_step_history.append(num_displaced_this_step)
+        
         #update the populations.
         for patch, occupant_idxs in self.occupants.items():
             self.pop_count[patch] = len(occupant_idxs)
@@ -134,19 +146,6 @@ class TransformingCity(Cell2D):
         self.rent_diff = np.subtract(self.rent_current, self.rent_start)
 
         self.p_creative_space_history.append(self.measure_p_creative_space())
-
-        num_displaced_this_step = 0
-        for i, agent in enumerate(self.agents):
-            old_loc = agent.loc
-            new_loc = agent.step(self, self.rent_current[old_loc])
-            if new_loc:
-                self.occupants[new_loc].add(i)
-                self.occupants[old_loc].discard(i)
-                if i not in self.displaced:
-                    self.displaced.add(i)
-                num_displaced_this_step += 1
-        self.displaced_history.append(len(self.displaced))
-        self.num_displaced_this_step_history.append(num_displaced_this_step)
 
     def initialize_agents(self, n_agents_to_start):
         self.agents = []
