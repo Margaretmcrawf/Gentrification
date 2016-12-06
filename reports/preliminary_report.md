@@ -10,16 +10,28 @@ Community transition -- known as gentrification if its changes are unwelcome or 
 
 For developing cities, attracting creative individuals or those who bring about knowledge-based economies is a highly desired outcome.  An ABM of a city and its citizens is developed. The environment is a 2D grid described by land use, neighborhoods, creative space, and rent. The agents have attributes like income, education, tolerance, and creativity.  They used survey data from a developing city in Pakistan, as well as analysis of overhead map imagery in order to estimate proportions of different attributes in the environment and population. 
 
-#### Torrens, P. M. and Nara, A.  Modeling Gentrification Dynamics: a Hybrid Approach Comput., Environ. and Urban Systems 31 http://www.sciencedirect.com/science/article/pii/S0198971506000718
-
-This paper creates a model for cities with both “static” automata, like markets,  and “mobile” automata, like people. It explores the markets over time for different neighborhood makeups. The paper mostly focused on building the model as opposed to producing a lot of results, and there are a lot of parameters, but it is a cool hybrid of cellular automata and multi-agent systems, and their results showed that introducing gentrifiers and gentrifiable properties affects property values more than either in isolation.
-
 #### S. Brown. Beyond Gentrification: Strategies for Guiding the Conversation and Redirecting the Outcomes of Community Transition A paper submitted to Harvard’s Joint Center for Housing Studies and NeighborWorks America July 2014 
 
 This paper does not come from the complexity literature.  Its insights comes from case studies and interviews of residents of areas that has experienced community transition: Jamaica Plain in Boston and Columbia Heights in DC. 
 
 ## Methodology
-We originally planned to reproduce the results of the NetLogo model. However, our project has diverged a bit as we are now focusing on the effects of subsidizing on displacement of original residents and creative value of areas, which isn’t covered in that model. We still used it as a reference, but we are measuring different things than they were so we haven’t replicated anything.
+The agent based model developed by Ammar Malik et. al influenced many of our starting modeling decisions. We were interested in seeing how residents would move in a city in response to increases in prices for housing, and wanted to also measure positive effects of revitalization of neighborhoods.  The authors had created a complicated model that included but not limited to
+- agent movement due to rent costing higher than a threshold percentage of an individual's income, cost of a block 
+- agents having low, medium, and high creativity levels
+- the increased creativity value of agents positively correlated with a relative increase in income
+- blocks would increase their creative value based on the creativity of their residents
+- The more creative value a block would have, the higher rents would increase from their starting value
+
+In their subsequent investigation of optimizing for creativity in a city, the authors focused on the change in creative value over the N time steps.  Our questioning is expanded from their focus only on maximizing creativity, in that we are focused on the balance of community transformation. The we use two metrics in our simulation to capture this balance: The positive effect from transformation is the change in creative value; the negative effect is the increased displacement of residents in neighborhoods.
+
+We added new components to the model, in order to model policies that curb negative effects like displacement. We took inspiration from cities like San Francisco, where subsidized housing is provided for residents.
+
+- Subsidized Agents (Welfare).  Both in the percentage of the population that is subsidized, and the rate at which each agent is subsidized.
+- Subsidized Housing Developed whenever new residential housing is built.
+
+We implemented subsidization based on welfare; this choice was arbitrary, although we imagine the effects would be distinct when we allow for expansion of the city; both in the number of agents and the continued development of residential spaces. 
+
+The authors included other model dynamics.  In the ideal case, a thorough sensitivity analysis would have been conduct`ed, to validate that the removal of features in the model would yield similar results.  However, we took a qualitative approach, and decided to strip certain parts away that did not do work for us in answering our question.
 
 The first experiment that we ran was on the effect of subsidization on rate of displacement of agents. This question shows if our tweaks in the model have a positive effect on low income agents. Since one of our main objectives is to investigate ways to keep low income residents in their homes, this is a vital result. 
 
@@ -65,19 +77,25 @@ However, when we did a linear regression of 100 runs for each of the subsidizati
 
 ### Question: How does subsidization affect the diffusion of creativity in a city?
 
-Methodology:  The two settings we compared for subsidization was 0% of the population and 50% of the population being on 50% subsidization on their rent.  For the metric of creavity spread in a city, we used the % of residential cells that are “creative spaces”, defined as having X number of creative agents living in the cell.  
+What we did:
+
+- What percentage of the population was on subsidization / housing welfare.
+- Divided the range between 0 - 90% into 5 equally space intervals
+- 1000 trials were run where a city was allowed to evolve over 50 time steps (which is the equivalent of 50 years in our model... yikes!)
+- Each trial was seeded with the same starting conditions 
+Methodology:  The two settings we compared for subsidization was 0% of the population and 50% of the population being on 50% subsidization on their rent.  For the metric of creativity spread in a city, we used the % of residential cells that are “creative spaces”, defined as having X number of creative agents living in the cell.  
 
 The city I used was a 10 by 10 grid, with the average rent starting at 12000 currency units and the population of agents totaling 1000.  The number of individuals required to label a cell as creative was just 3.
 
-Results: Below is several graphs, where a city is initialized with particular agents.  Then the scenario is played through for 50 timesteps. 
+Results: Below is several graphs, where a city is initialized with particular agents.  Then the scenario is played through for 50 time steps. 
 
 ![](imgs/p_creative_space_subnosub_1.png) | ![](imgs/p_creative_space_subnosub_2.png)
 :--------------------------------:|:-----------------------------------:
 ![](imgs/p_creative_space_subnosub_3.png)| ![](imgs/p_creative_space_subnosub_4.png)
 
-Intepretation: Note that these are across multiple trials.  Since the distribution of agents across the residential cells is random, we can expect the percent of creative space to also be random
+Interpretation: Note that these are across multiple trials.  Since the distribution of agents across the residential cells is random, we can expect the percent of creative space to also be random
 
-Visually, I might suppose that on average, a unsubidized policy results in a higher increase in % of creative space.  However, over 4 trials, that claim cannot be concluded.
+Visually, I might suppose that on average, a unsubsidized policy results in a higher increase in % of creative space.  However, over 4 trials, that claim cannot be concluded.
 
 In addition, the graph for subsidized agents has a smaller variation.  This corresponds to smaller changes in the percent of creative spaces per time step.  This could be correlated to less movement of agents around, which shuffle the distributions of creative people over creative space.
 
@@ -89,13 +107,13 @@ Results:
 
 ![](imgs/num_move_this_step_1.png) | ![](imgs/num_move_this_step_2.png)
 
-The number of agents moving per timestep, over 50 time steps.  There is intense moving at the beginning, due to the fact that probably many poor agents are initialized in regions where rent is high.  
+The number of agents moving per time step, over 50 time steps.  There is intense moving at the beginning, due to the fact that probably many poor agents are initialized in regions where rent is high.  
 
-In the subsidized case, there is a monotonic trend towards moving less and less.  It approaches a steady steate quickly.
+In the subsidized case, there is a monotonic trend towards moving less and less.  It approaches a steady state quickly.
 
-For unsubidized, however, we can see that movement starts to increase near timestep 15, and continues to increase.  This might relate to creative value and thus rental prices over time, which would make the environment more pressured to move for individuals.
+For unsubsidized, however, we can see that movement starts to increase near time step 15, and continues to increase.  This might relate to creative value and thus rental prices over time, which would make the environment more pressured to move for individuals.
 
-Interestingly, we can look at both how movement of people are viewed in a city as well as the effect on changes in the percentage of creative space. Below, subsidization provides a benefit in both regards. Again, disclaimer that this is one trial and the numbers are no way indicative of a larger trend.  The sensitvity to randomness is something we aim to fix in the model in order to study these policy decisions better.
+Interestingly, we can look at both how movement of people are viewed in a city as well as the effect on changes in the percentage of creative space. Below, subsidization provides a benefit in both regards. Again, disclaimer that this is one trial and the numbers are no way indicative of a larger trend.  The sensitivity to randomness is something we aim to fix in the model in order to study these policy decisions better.
 
 change in % of creative space in unsubsidized city: -1.6 %
 change in % of creative space in 50% subsidized city: 3.0 %
@@ -108,7 +126,7 @@ We still need to create graphs comparing effectiveness at curbing gentrification
 ![](imgs/cartoon_gentr_vs_creative.JPG)
 
 ## Learning Goals
-_Margo_: I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I’d like to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important. 
+_Margo_: I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I want to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important. 
 
 _Ryan_: I would like to practice on my creation and delivery of compelling punchline graphs. This project will help me, because one of our extensions will be ensuring that the punchline stays the same, despite simplifications of the model.  In addition, since we plan to explore the relationship between gentrification and movement of creativity into a city, we will need to generate novel punchlines too.  Finally, I am generally curious about the topic of technology/creativity in cities interacts with the uprooting of poorer households.  I will be satisfied with more real-world theory and understanding If I can learn about the theory in this field, and some strategies cities are thinking about to achieve desirable outcomes to balance these two.
 
