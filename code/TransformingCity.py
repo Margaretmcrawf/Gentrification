@@ -15,7 +15,7 @@ LU_GREEN = 6
 
 # TODO(rlouie): Starting at line 90 in netlogo, the proportions coded/commented mismatch. Rectify this
 # LU_PROPS = (0.24, 0.31, 0.06, 0.06, 0.0, 0.19, 0.09)
-LU_PROPS = (0.0, 0.6, 0.1, 0.1, 0.0, 0.1, 0.1)
+LU_PROPS = (0.0, 1.0, 0., 0., 0.0, 0., 0.)
 
 class TransformingCity(Cell2D):
 
