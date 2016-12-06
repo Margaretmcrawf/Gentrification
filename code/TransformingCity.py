@@ -95,7 +95,8 @@ class TransformingCity(Cell2D):
                 if self.allow_development:
                     self.creative_space[patch] = 1
                     self.rent_start[patch] *= 2
-                    self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
+
+            self.creative_value[patch] = self.pop_count_cr_h[patch] * 10 + self.pop_count_cr_m[patch] * 5
 
         self.occupancy_start = self.pop_count
 
