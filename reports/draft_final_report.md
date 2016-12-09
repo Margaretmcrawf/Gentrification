@@ -41,39 +41,19 @@ The third experiment was how subsidization effects the creativity value of cells
 
 ## Experiments
 
-### Question: Does a small number of agents getting subsidisation affect the rate of displacement of original renters?
+### Question: How does subsidization affect the rate of displacement of original renters?
 
-Methodology: The model takes in an optional input of percentage of agents who get subsidized housing. Then, the lowest income residents are given subsidized housing, which means that they pay a below market rate, 50% of the rate by default. Since agents move when they can't afford rent, we thought there would be less movement when we subsidized more agents. To see the difference, we assigned the subsidized housing percentage to 10%. Two graphs are shown below, both showing displacement over time for cities with and without subsidized housing. They were normalized by subtracting the initial values, because some runs of the model randomly assign more poor agents to high rent patches, so the displacement in the first time step is very high. We also took linear regressions for 100 runs of each scenario.
+Methodology: The model takes in an optional input of percentage of agents who get subsidized housing. Then, the lowest income residents are given subsidized housing, which means that they pay a below market rate. We ran simulations in which we gave 50% of the population subsidized housing and varied the percentage of rate which they paid. We aimed to measure the difference subsidization rates made in the amount of displacement that occured. 
+Shown below is a time series for displacement in each time step and a cumulative one for the number of agents displaced from their original homes, compared for a subsidized and unsubsidized city. The city with subsidization has much less movement in both graphs. For the displacement per step, it starts out with a lower value and continues to decrease. For the cumulative graph, it starts lower and levels off to a lower level.
 
-Results: The results graphs are shown below.
+![](imgs/timestep_perstep_and_cumulative.png)
 
-![](imgs/normalized_displacement_1.png) | ![](imgs/normalized_displacement_2.png)
+We wanted to get more conclusive evidence, so we ran many experiments for values of 25%, 50% and 75% of market rate at 50% of agents subsidized, and found the cumulative number of displaced agents after 20 timesteps and the number displaced at the 20th timestep. Shown below is a graph of 1000 trials for each subsidisation rate, with errorbars.
+
+![](imgs/errorbar_1000_trials.png) | ![](imgs/disp_perstep_1000trials.png)
 :--------------------------------:|:-----------------------------------:
 
-Linear Regressions:
-
-		slope of unsubsidized displacement: 19.4279172932
-		slope of subsidized displacement: 20.4306842105
-
-Interpretation: Individual graphs show a lot of variation in slope, but from our linear regression it seems clear that subsidisation has no positive effect on rate of displacement, although it seems to make a difference in displacement in the first time step.
-
-### Question: Does different levels of subsidization affect the outcomes of displacement in neighborhoods?
-
-Methodology: We tried by giving renters who get subsidized housing different levels of subsidization. Those agents paid 25, 50, or 75% of the market rate in rent. We then observed the displacement over time. We took linear regressions for 100 trials of each.
-
-Results: 
-
-![](imgs/subsidisation_rates.png) | ![](imgs/subsidisation_rates_2.png)
-:--------------------------------:|:-----------------------------------:
-![](imgs/subsidisation_rate_3.png)| ![](imgs/subsidisation_rate_4.png)
-
-		slope of 25% market rate rent:16.3993308271
-		slope of 50% market rate rent:26.487075188
-		slope of 75% market rate rent:26.4622631579
-
-Interpretation:
-The graphical results don't show anything conclusive about whether amount of subsidisation makes a difference. 
-However, when we did a linear regression of 100 runs for each of the subsidization rates, we found that the average slope for 25% was much lower than those for 50% and 75%, which means people are displaced at a much lower rate. It seems that very low rental rates do make a significant difference.
+Interpretation: As shown in the graph, there is a positive correlation between amount of rent paid for subsidized agents and number of agents displaced. Lower rents for subsidized agents, which would be the result of a more aggressive subsidization policy, allow for less displacement both cumulatively and per timestep. 
 
 ### Question: How does subsidization affect the diffusion of creativity in a city?
 
