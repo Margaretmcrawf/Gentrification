@@ -94,6 +94,16 @@ When testing subsidization policies that varied the amount of rent each agent pa
 
 __Interpretation__: In the context of the broader question, this result indicates that more aggressive subsidization -- either by giving subsidies to more people or increasing the monetary amount of subsidies -- has a positive effect on increasing the number of creative spaces in a city.
 
+Looking at the distribution of creative value for a simulations of city that implements both an aggressive subsidization rule and a zero-subsidization rule sheds light onto why this behavior exists.
+
+A creative space in our model is defined as having 3 medium or high creative individuals in a patch. The minimum creative value of a patch for it to be labeled a creative space is 15 (3 medium creative individuals contributing their 5 points of creativity each).  Thus it is helpful to look at how the distribution of creative value in patches compares for values under 15, including {0, 5, 10}.  Remember that creative values {5, 10} represent patches where a few high or medium creative individuals live, but where a patch is not considered a creative space. Let us call this type of patch one with "lost potential", to describe the idea that creative agents who live in non-creative spaces are essentially losing the opportunity to contribute to patches that have more high or medium creatives like them.
+
+__Distributions of Creative Value, after 10 time steps have elapsed__:
+
+![](imgs/creativity_cdfpdf_100trials_size15.png)
+
+From the distributions above, the subsidized city has more patches with a creative value of 0, but less patches for a creative value of {5, 10}. This indicates that subsidized cities have fewer "lost potential" patches. These creative individuals instead are congregating with other high or medium creative individuals, forming more creative spaces.  This demonstrates a more granular view of how aggressive subsidization can help creatives stick together.  Our hypothesis is that subsidization is helping low-income creative individuals stay in highly creative patches despite a rising rental cost of these areas; we will leave it to future work to confirm that this intuition is correct.
+
 ## Learning Goals
 _Margo_: 
 
