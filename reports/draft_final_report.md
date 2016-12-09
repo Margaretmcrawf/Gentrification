@@ -72,53 +72,37 @@ __Interpretation__: As shown in the graph, there is a positive correlation betwe
 
 ### Question: How does subsidization affect the diffusion of creativity in a city?
 
-What we did:
+__Methodology__: Subsidization policies varied on two dimensions: how many agents are subsidized and the amount of money an agent receives in subsidies . These dimensions were defined in terms of percent of population subsidized and percentage of rent an agent pays out of pocket, the rest covered by subsidization.
 
-- What percentage of the population was on subsidization / housing welfare.
-- Divided the range between 0 - 90% into 5 equally space intervals
-- 1000 trials were run where a city was allowed to evolve over 50 time steps (which is the equivalent of 50 years in our model... yikes!)
-- Each trial was seeded with the same starting conditions 
-Methodology:  The two settings we compared for subsidization was 0% of the population and 50% of the population being on 50% subsidization on their rent.  For the metric of creativity spread in a city, we used the % of residential cells that are “creative spaces”, defined as having X number of creative agents living in the cell.  
+For the metric of creativity spread in a city, we used the percent of residential cells that are “creative spaces”, defined as having K number of medium or high creative agents living in the cell. We defined K=3, following the model of Mallik et al.  By taking the proportion of creative spaces before simulation and after 10 steps of simulation with different policies active, we can measure how different policies affect the change of creative space.
 
-The city I used was a 10 by 10 grid, with the average rent starting at 12000 currency units and the population of agents totaling 1000.  The number of individuals required to label a cell as creative was just 3.
+Finally, we varied the number of patches in the city. When holding the population of agents constant, increasing the number of patches decreases population density at initialization.  Population density is related to the amount of creative individuals in each patch and thus the creative value of patches.  With higher density, the amount of creative spaces in a city was higher upon initialization.
 
-Results: Below is several graphs, where a city is initialized with particular agents.  Then the scenario is played through for 50 time steps. 
+![](imgs/p_creative_space_subnosub/foo10.png) ![](imgs/p_creative_space_subnosub/foo15.png)
 
-![](imgs/p_creative_space_subnosub_1.png) | ![](imgs/p_creative_space_subnosub_2.png)
-:--------------------------------:|:-----------------------------------:
-![](imgs/p_creative_space_subnosub_3.png)| ![](imgs/p_creative_space_subnosub_4.png)
+The unexpected effect of varying the population density was that percentage change in creative space depended on this initial parameter.  As shown for a single model run holding all initialization constant, a 10x10 grid with 100 patches shows a decrease in the percentage of creative space over time, while a 15x15 grid with 225 patches shows the opposite trend.
 
-Interpretation: Note that these are across multiple trials.  Since the distribution of agents across the residential cells is random, we can expect the percent of creative space to also be random
+__Results__: In the graphs below, the number of agents being subsidized is being varied, while the amount of rent each subsidized agent is paying is held constant at 50% of the market rate.  A positive correlation can be found between the percentage of the population on subsidization and the change in the percentage of creative space;  this observation stands variations in the initial population density too.  
 
-Visually, I might suppose that on average, a unsubsidized policy results in a higher increase in % of creative space.  However, over 4 trials, that claim cannot be concluded.
+![](imgs/p_creative_space_subnosub/size10_pop1000.png) ![](imgs/p_creative_space_subnosub/size15_pop1000.png)
 
-In addition, the graph for subsidized agents has a smaller variation.  This corresponds to smaller changes in the percent of creative spaces per time step.  This could be correlated to less movement of agents around, which shuffle the distributions of creative people over creative space.
+We note that in the 100 patch city, the change in the percentage of creative space after 10 steps is negative, on average.  In the 225 patch city, the opposite is true: every policy leads to increases in the percentage of cells that are creative spaces.  In both cases, making subsidization available for more agents results in better outcomes when optimizing for the amount of creative space in a city.
 
-### Question: Do more agents move when there is no subsidized housing?
+When testing subsidization policies that varied the amount of rent each agent pays while holding the percentage of agents subsidized constant at 45% of the population, we found a similar correlation between increased subsidization and better creativity outcomes.  Note that the "subsidized housing rate" defines the proportion of rent an agent pays out of pocket.  In the 0.0 extreme, agents pay nothing and receive maximum subsidies; while in the 1.0 extreme, agents pay everything and receive no subsidies.
 
-It would make sense, that with subsidization, more agents are happy and are not being displaced by rent hikes.  This would also explain the reduced variation in the percent of creative space graphs, discussed above.
+![](imgs/p_creative_space_amount_sub/size10_pop1000.png) ![](imgs/p_creative_space_amount_sub/size15_pop1000.png)
 
-Results:
+__Interpretation__: In the context of the broader question, this result indicates that more aggressive subsidization -- either by giving subsidies to more people or increasing the monetary amount of subsidies -- has a positive effect on increasing the number of creative spaces in a city.
 
-![](imgs/num_move_this_step_1.png) | ![](imgs/num_move_this_step_2.png)
+Looking at the distribution of creative value for a simulations of city that implements both an aggressive subsidization rule and a zero-subsidization rule sheds light onto why this behavior exists.
 
-The number of agents moving per time step, over 50 time steps.  There is intense moving at the beginning, due to the fact that probably many poor agents are initialized in regions where rent is high.  
+A creative space in our model is defined as having 3 medium or high creative individuals in a patch. The minimum creative value of a patch for it to be labeled a creative space is 15 (3 medium creative individuals contributing their 5 points of creativity each).  Thus it is helpful to look at how the distribution of creative value in patches compares for values under 15, including {0, 5, 10}.  Remember that creative values {5, 10} represent patches where a few high or medium creative individuals live, but where a patch is not considered a creative space. Let us call this type of patch one with "lost potential", to describe the idea that creative agents who live in non-creative spaces are essentially losing the opportunity to contribute to patches that have more high or medium creatives like them.
 
-In the subsidized case, there is a monotonic trend towards moving less and less.  It approaches a steady state quickly.
+__Distributions of Creative Value, after 10 time steps have elapsed__:
 
-For unsubsidized, however, we can see that movement starts to increase near time step 15, and continues to increase.  This might relate to creative value and thus rental prices over time, which would make the environment more pressured to move for individuals.
+![](imgs/creativity_cdfpdf_100trials_size15.png)
 
-Interestingly, we can look at both how movement of people are viewed in a city as well as the effect on changes in the percentage of creative space. Below, subsidization provides a benefit in both regards. Again, disclaimer that this is one trial and the numbers are no way indicative of a larger trend.  The sensitivity to randomness is something we aim to fix in the model in order to study these policy decisions better.
-
-change in % of creative space in unsubsidized city: -1.6 %
-change in % of creative space in 50% subsidized city: 3.0 %
-
-![](imgs/num_move_this_step_3.png)
-
-## Future Work
-We still need to create graphs comparing effectiveness at curbing gentrification and creativity of population. 
-
-![](imgs/cartoon_gentr_vs_creative.JPG)
+From the distributions above, the subsidized city has more patches with a creative value of 0, but less patches for a creative value of {5, 10}. This indicates that subsidized cities have fewer "lost potential" patches. These creative individuals instead are congregating with other high or medium creative individuals, forming more creative spaces.  This demonstrates a more granular view of how aggressive subsidization can help creatives stick together.  Our hypothesis is that subsidization is helping low-income creative individuals stay in highly creative patches despite a rising rental cost of these areas; we will leave it to future work to confirm that this intuition is correct.
 
 ## Learning Goals
 _Margo_: 
