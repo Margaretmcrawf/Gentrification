@@ -22,7 +22,21 @@ The agent based model developed by Ammar Malik et. al influenced many of our sta
 - blocks would increase their creative value based on the creativity of their residents
 - The more creative value a block would have, the higher rents would increase from their starting value
 
+Our model is a 2D array, with cells representing land patches and agents assigned to each patch. The agents have an income and creativity value, and the patches have a rent. The agents move when they are unhappy due to not being able to afford rent. Shown below are two 2D cells, one right after the landscape was initialized, and the other after agents have moved around for 10 time steps. The darkness of the cell represents the population density of that cell. The agents start out pretty evenly spread, and move around, generally converging on a few very popular cells and some very sparse ones.
+
+![](imgs/population_cellviewer_init.png) | ![](imgs/population_cellviewer_10steps.png)
+:--------------------------------:|:-----------------------------------:
+
 In their subsequent investigation of optimizing for creativity in a city, the authors focused on the change in creative value over the N time steps.  Our questioning is expanded from their focus only on maximizing creativity, in that we are focused on the balance of community transformation. The we use two metrics in our simulation to capture this balance: The positive effect from transformation is the change in creative value; the negative effect is the increased displacement of residents in neighborhoods.
+
+To observe change in creativity, we had several different metrics. Creativity value of a patch of land is measured based on the number of high and medium creative individuals in those patches. High creative individuals are worth 10, and medium are worth 5. All other agents don't contribute to the creative value. One useful visual for creativity in a city is a CDF of creativity values of all of the cells. The graph below shows two CDFs overlaid, one right after the city was initialized and the other after 10 time steps. After movement, more cells have very low creative values. Before agents move, 15% of the patches have a creativity value of zero, but that number increases to 40% after 10 timesteps. However, there are more patches with very high creative values after some movement. Before movement, only a couple of cells are above 40, but 10% of cells are above 40 after 10 steps. The CDF for before movement tails off at a highest value of 50, while the highest value after movement is 100.
+
+![](imgs/cdf_comparison_creativity.png) 
+
+Agents are continuously displaced throughout the model, due to inability to pay rent. The graph on the left below shows the number of agents moving vs. time for a run of the model. Although the number of agents who move tails off, it doesn't reach zero. On the right is a graph of cumulative number of agents displaced from their original homes. After about 15 timesteps, about 82.5% of agents have moved at least once due to rent being too high. When we swept different parameters, we took the y value of the right graph after a certain time step for many runs of the model.
+
+![](imgs/displacement_time.png) | ![](imgs/cumulative_displacement_time.png)
+:--------------------------------:|:-----------------------------------:
 
 We added new components to the model, in order to model policies that curb negative effects like displacement. We took inspiration from cities like San Francisco, where subsidized housing is provided for residents.
 
@@ -41,39 +55,20 @@ The third experiment was how subsidization effects the creativity value of cells
 
 ## Experiments
 
-### Question: Does a small number of agents getting subsidisation affect the rate of displacement of original renters?
+### Question: How does subsidization affect the rate of displacement of original renters?
 
-Methodology: The model takes in an optional input of percentage of agents who get subsidized housing. Then, the lowest income residents are given subsidized housing, which means that they pay a below market rate, 50% of the rate by default. Since agents move when they can't afford rent, we thought there would be less movement when we subsidized more agents. To see the difference, we assigned the subsidized housing percentage to 10%. Two graphs are shown below, both showing displacement over time for cities with and without subsidized housing. They were normalized by subtracting the initial values, because some runs of the model randomly assign more poor agents to high rent patches, so the displacement in the first time step is very high. We also took linear regressions for 100 runs of each scenario.
+__Methodology__: The model takes in an optional input of percentage of agents who get subsidized housing. Then, the lowest income residents are given subsidized housing, which means that they pay a below market rate. We ran simulations in which we gave 50% of the population subsidized housing and varied the percentage of rate which they paid. We aimed to measure the difference subsidization rates made in the amount of displacement that occured. 
+Shown below is a time series for displacement in each time step and a cumulative one for the number of agents displaced from their original homes, compared for a subsidized and unsubsidized city. The city with subsidization has much less movement in both graphs. For the displacement per step, it starts out with a lower value and continues to decrease. For the cumulative graph, it starts lower and levels off to a lower level.
 
-Results: The results graphs are shown below.
+![](imgs/timestep_perstep_and_cumulative.png)
 
-![](imgs/normalized_displacement_1.png) | ![](imgs/normalized_displacement_2.png)
+__Results:__
+We wanted to get more conclusive evidence, so we ran many experiments for values of 25%, 50% and 75% of market rate at 50% of agents subsidized, and found the cumulative number of displaced agents after 20 timesteps and the number displaced at the 20th timestep. Shown below is a graph of 1000 trials for each subsidisation rate, with errorbars.
+
+![](imgs/errorbar_1000_trials.png) | ![](imgs/disp_perstep_1000trials.png)
 :--------------------------------:|:-----------------------------------:
 
-Linear Regressions:
-
-		slope of unsubsidized displacement: 19.4279172932
-		slope of subsidized displacement: 20.4306842105
-
-Interpretation: Individual graphs show a lot of variation in slope, but from our linear regression it seems clear that subsidisation has no positive effect on rate of displacement, although it seems to make a difference in displacement in the first time step.
-
-### Question: Does different levels of subsidization affect the outcomes of displacement in neighborhoods?
-
-Methodology: We tried by giving renters who get subsidized housing different levels of subsidization. Those agents paid 25, 50, or 75% of the market rate in rent. We then observed the displacement over time. We took linear regressions for 100 trials of each.
-
-Results: 
-
-![](imgs/subsidisation_rates.png) | ![](imgs/subsidisation_rates_2.png)
-:--------------------------------:|:-----------------------------------:
-![](imgs/subsidisation_rate_3.png)| ![](imgs/subsidisation_rate_4.png)
-
-		slope of 25% market rate rent:16.3993308271
-		slope of 50% market rate rent:26.487075188
-		slope of 75% market rate rent:26.4622631579
-
-Interpretation:
-The graphical results don't show anything conclusive about whether amount of subsidisation makes a difference. 
-However, when we did a linear regression of 100 runs for each of the subsidization rates, we found that the average slope for 25% was much lower than those for 50% and 75%, which means people are displaced at a much lower rate. It seems that very low rental rates do make a significant difference.
+__Interpretation__: As shown in the graph, there is a positive correlation between amount of rent paid for subsidized agents and number of agents displaced. Lower rents for subsidized agents, which would be the result of a more aggressive subsidization policy, allow for less displacement both cumulatively and per timestep. 
 
 ### Question: How does subsidization affect the diffusion of creativity in a city?
 
@@ -126,7 +121,15 @@ We still need to create graphs comparing effectiveness at curbing gentrification
 ![](imgs/cartoon_gentr_vs_creative.JPG)
 
 ## Learning Goals
-_Margo_: I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I want to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important. 
+_Margo_: 
+
+Initial Learning Goals:
+
+I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I want to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important.
+
+Reflection:
+
+I think I was most successful at my learning goal of evaluating results quantitatively. In our project, we produced lots of different metrics of success for runs of the model and parameter sweeps. Some of those included CDFs, PDFs, values after a certain number of time steps, and linear regression. I feel more confident in my ability to use statistical tools to evaluate results. I'm somewhat satisfied with the other learning goal of understanding our reference model better by moving it to python. I think I learned a lot from that process, but we ended up going off in our own direction pretty early in the project, so we didn't have a direct comparison from ours to the paper's. We still used a lot of the properties of the model, and I think I understood most of it.
 
 _Ryan_: I would like to practice on my creation and delivery of compelling punchline graphs. This project will help me, because one of our extensions will be ensuring that the punchline stays the same, despite simplifications of the model.  In addition, since we plan to explore the relationship between gentrification and movement of creativity into a city, we will need to generate novel punchlines too.  Finally, I am generally curious about the topic of technology/creativity in cities interacts with the uprooting of poorer households.  I will be satisfied with more real-world theory and understanding If I can learn about the theory in this field, and some strategies cities are thinking about to achieve desirable outcomes to balance these two.
 
