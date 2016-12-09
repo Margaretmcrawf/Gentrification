@@ -1,8 +1,8 @@
 # Gentrification or Revitalization? A Complexity Science Approach
-Ryan Louie '17 and Margo Crawford '19
+Margo Crawford '19 and Ryan Louie '17
 
 ## Abstract
-Community transition -- known as gentrification if its changes are unwelcome or revitalization if it is welcome -- is a divisive issue in cities across the country. While higher income residents entering a neighborhood can lead to a revitalized economy and more amenities, many are concerned that the original residents don't reap the benefits, because they are displaced by higher rents. Our project will focus on balancing an increase in creative, knowledge based industry in a city with minimal displacement of long term residents. We will refine and expand on a model of creativity in cities (Ammar Malik et al.) to predict the effects of housing development with subsidized housing on the makeup of a neighborhood being gentrified. 
+Community transition -- known as gentrification if its changes are unwelcome or revitalization if it is welcome -- is a divisive issue in cities across the world. While higher income residents entering a neighborhood can lead to a revitalized economy and more amenities, critics point out that original residents don't reap the benefits, because they are displaced by higher rents. Our project will focus on balancing an increase in creative, knowledge based industry in a city with minimal displacement of long term residents. We will refine and expand on a model of creativity in cities (Ammar Malik et al.) to predict the effects of housing development with subsidized housing on the makeup of a neighborhood being gentrified. 
 
 ## Related Work
 
@@ -45,13 +45,7 @@ We added new components to the model, in order to model policies that curb negat
 
 We implemented subsidization based on welfare; this choice was arbitrary, although we imagine the effects would be distinct when we allow for expansion of the city; both in the number of agents and the continued development of residential spaces. 
 
-The authors included other model dynamics.  In the ideal case, a thorough sensitivity analysis would have been conduct`ed, to validate that the removal of features in the model would yield similar results.  However, we took a qualitative approach, and decided to strip certain parts away that did not do work for us in answering our question.
-
-The first experiment that we ran was on the effect of subsidization on rate of displacement of agents. This question shows if our tweaks in the model have a positive effect on low income agents. Since one of our main objectives is to investigate ways to keep low income residents in their homes, this is a vital result. 
-
-The second experiment was how the level of subsidization effects the displacement of residents. The renters who qualify for subsidized housing pay some fraction of the market value in rent, and we’d like to know how much that percentage can be while still being effective at preventing displacement.
-
-The third experiment was how subsidization effects the creativity value of cells. In the NetLogo model, we observed a lot of clustering of creative agents in certain cells. Since creative agents earn more, they may live in squares that low creative agents can’t afford. We’d like to know if and how adding subsidized housing changes the distribution of creativity.
+The authors included other model dynamics.  In the ideal case, a thorough sensitivity analysis would have been conducted, to validate that the removal of features in the model would yield similar results.  However, we took a qualitative approach, and decided to strip certain parts away that did not do work for us in answering our question.
 
 ## Experiments
 
@@ -105,20 +99,28 @@ __Distributions of Creative Value, after 10 time steps have elapsed__:
 From the distributions above, the subsidized city has more patches with a creative value of 0, but less patches for a creative value of {5, 10}. This indicates that subsidized cities have fewer "lost potential" patches. These creative individuals instead are congregating with other high or medium creative individuals, forming more creative spaces.  This demonstrates a more granular view of how aggressive subsidization can help creatives stick together.  Our hypothesis is that subsidization is helping low-income creative individuals stay in highly creative patches despite a rising rental cost of these areas; we will leave it to future work to confirm that this intuition is correct.
 
 ## Learning Goals
-_Margo_: 
 
-Initial Learning Goals:
+#### Margo: 
+
+##### Initial Learning Goals:
 
 I would like to use the process of converting the creativity model to Python to understand it better, and figure out how to simplify things. The paper that we are basing our model off of used NetLogo, so one of our first steps will be to move that to Python, and I think that process will be very valuable. I want to get better at evaluating results quantitatively (through evaluating punchline graphs and comparing different versions of the model). Our project makes sense for this because we are trying many different iterations of our model with some variables eliminated, so showing when and where they differ will be important.
 
-Reflection:
+##### Reflection:
 
 I think I was most successful at my learning goal of evaluating results quantitatively. In our project, we produced lots of different metrics of success for runs of the model and parameter sweeps. Some of those included CDFs, PDFs, values after a certain number of time steps, and linear regression. I feel more confident in my ability to use statistical tools to evaluate results. I'm somewhat satisfied with the other learning goal of understanding our reference model better by moving it to python. I think I learned a lot from that process, but we ended up going off in our own direction pretty early in the project, so we didn't have a direct comparison from ours to the paper's. We still used a lot of the properties of the model, and I think I understood most of it.
 
-_Ryan_: I would like to practice on my creation and delivery of compelling punchline graphs. This project will help me, because one of our extensions will be ensuring that the punchline stays the same, despite simplifications of the model.  In addition, since we plan to explore the relationship between gentrification and movement of creativity into a city, we will need to generate novel punchlines too.  Finally, I am generally curious about the topic of technology/creativity in cities interacts with the uprooting of poorer households.  I will be satisfied with more real-world theory and understanding If I can learn about the theory in this field, and some strategies cities are thinking about to achieve desirable outcomes to balance these two.
+#### Ryan: 
 
+##### Initial Learning Goals:
 
+I would like to practice on my creation and delivery of compelling punchline graphs. This project will help me, because one of our extensions will be ensuring that the punchline stays the same, despite simplifications of the model.  In addition, since we plan to explore the relationship between gentrification and movement of creativity into a city, we will need to generate novel punchlines too.  Finally, I am generally curious about the topic of technology/creativity in cities interacts with the uprooting of poorer households.  I will be satisfied with more real-world theory and understanding If I can learn about the theory in this field, and some strategies cities are thinking about to achieve desirable outcomes to balance these two.
 
+##### Reflection:
+
+I was able to satisfy my learning goals during the data analysis and interpretation phases of the project. We encountered many problems that disagreed with our initial hypothesis about the model.  This required careful follow up in the generation of new graphs.
+
+Most of my learning happened during the process of refining the graph of change in creative space for different subsidization policies.  For the draft presentation, I presented results that showed that change in creative value was never positive, on average, which seemed like a failure of our model. I gained a better understanding of the model by realizing that size of the grid affected the amount of creative space at the start, which affected the change in creative space later on.  Writing the interpretation section for this question also helped me link a more granular view of creative value in patches to the results we found in the punch line graph. Explaining this gave me practice in making a more convincing case for the punchline graph.  
 
 
 
