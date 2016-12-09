@@ -94,32 +94,6 @@ When testing subsidization policies that varied the amount of rent each agent pa
 
 __Interpretation__: In the context of the broader question, this result indicates that more aggressive subsidization -- either by giving subsidies to more people or increasing the monetary amount of subsidies -- has a positive effect on increasing the number of creative spaces in a city.
 
-### Question: Do more agents move when there is no subsidized housing?
-
-It would make sense, that with subsidization, more agents are happy and are not being displaced by rent hikes.  This would also explain the reduced variation in the percent of creative space graphs, discussed above.
-
-Results:
-
-![](imgs/num_move_this_step_1.png) | ![](imgs/num_move_this_step_2.png)
-
-The number of agents moving per time step, over 50 time steps.  There is intense moving at the beginning, due to the fact that probably many poor agents are initialized in regions where rent is high.  
-
-In the subsidized case, there is a monotonic trend towards moving less and less.  It approaches a steady state quickly.
-
-For unsubsidized, however, we can see that movement starts to increase near time step 15, and continues to increase.  This might relate to creative value and thus rental prices over time, which would make the environment more pressured to move for individuals.
-
-Interestingly, we can look at both how movement of people are viewed in a city as well as the effect on changes in the percentage of creative space. Below, subsidization provides a benefit in both regards. Again, disclaimer that this is one trial and the numbers are no way indicative of a larger trend.  The sensitivity to randomness is something we aim to fix in the model in order to study these policy decisions better.
-
-change in % of creative space in unsubsidized city: -1.6 %
-change in % of creative space in 50% subsidized city: 3.0 %
-
-![](imgs/num_move_this_step_3.png)
-
-## Future Work
-We still need to create graphs comparing effectiveness at curbing gentrification and creativity of population. 
-
-![](imgs/cartoon_gentr_vs_creative.JPG)
-
 ## Learning Goals
 _Margo_: 
 
