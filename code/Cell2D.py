@@ -112,7 +112,7 @@ class Cell2DViewer:
         cols = np.arange(1, m)
         self.vlines = plt.vlines(cols, 0, n, **options)
 
-    def animate(self, frames=20, interval=200, grid=False):
+    def animate(self, frames=10, interval=200, grid=False):
         """Creates an animation.
 
         frames: number of frames to draw
