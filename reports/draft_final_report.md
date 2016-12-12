@@ -1,12 +1,12 @@
 # Gentrification or Revitalization? A Complexity Science Approach
-Margo Crawford '19 and Ryan Louie '17
+Margo Crawford and Ryan Louie
 
 ## Abstract
-Community transition -- known as gentrification if its changes are unwelcome or revitalization if it is welcome -- is a divisive issue in cities across the world. While higher income residents entering a neighborhood can lead to a revitalized economy and more amenities, critics point out that original residents don't reap the benefits, because they are displaced by higher rents. Our project will focus on balancing an increase in creative, knowledge based industry in a city with minimal displacement of long term residents. We will refine and expand on a model of creativity in cities (Ammar Malik et al.) to predict the effects of housing development with subsidized housing on the makeup of a neighborhood being gentrified. 
+Community transition -- known as gentrification if its changes are unwelcome or revitalization if it is welcome -- is a divisive issue in cities across the world. While higher income residents entering a neighborhood can lead to a revitalized economy and more amenities, critics point out that original residents don't reap the benefits, because they are displaced by higher rents. Our project focuses on balancing an increase in creative, knowledge based industry in a city with minimal displacement of long term residents. We refine and expand on a model of creativity in cities (Malik et al.) to predict the effects of housing development with subsidized housing on the makeup of a neighborhood being gentrified. 
 
 ## Related Work
 
-#### Ammar Malik et al. Exploring Creativity and Urban Development with Agent-Based Modeling Journal	of Artificial Societies and Social Simulation 18	(2) 12 <http://jasss.soc.surrey.ac.uk/18/2/12.html>
+#### A. Malik et al. Exploring Creativity and Urban Development with Agent-Based Modeling Journal	of Artificial Societies and Social Simulation 18	(2) 12 <http://jasss.soc.surrey.ac.uk/18/2/12.html>
 
 For developing cities, attracting creative individuals or those who bring about knowledge-based economies is a highly desired outcome.  An ABM of a city and its citizens is developed. The environment is a 2D grid described by land use, neighborhoods, creative space, and rent. The agents have attributes like income, education, tolerance, and creativity.  They used survey data from a developing city in Pakistan, as well as analysis of overhead map imagery in order to estimate proportions of different attributes in the environment and population. 
 
@@ -15,21 +15,21 @@ For developing cities, attracting creative individuals or those who bring about 
 This paper does not come from the complexity literature.  Its insights comes from case studies and interviews of residents of areas that has experienced community transition: Jamaica Plain in Boston and Columbia Heights in DC. 
 
 ## Methodology
-The agent based model developed by Ammar Malik et. al influenced many of our starting modeling decisions. We were interested in seeing how residents would move in a city in response to increases in prices for housing, and wanted to also measure positive effects of revitalization of neighborhoods.  The authors had created a complicated model that included but not limited to
-- agent movement due to rent costing higher than a threshold percentage of an individual's income, cost of a block 
-- agents having low, medium, and high creativity levels
-- the increased creativity value of agents positively correlated with a relative increase in income
-- blocks would increase their creative value based on the creativity of their residents
-- The more creative value a block would have, the higher rents would increase from their starting value
+The agent based model developed by Malik et. al influenced many of our modeling decisions. The questions we posed included how residents would move in a city in response to increases in prices for housing, and how to maintain positive effects of revitalization of neighborhoods.  Malik et al. had created a complicated model that included but not limited to
+- Agent movement due to rent costing higher than a threshold percentage of an individual's income, cost of a block 
+- Agents having low, medium, and high creativity levels.
+- The increased creativity value of agents positively correlated with a relative increase in income.
+- Blocks would increase their creative value based on the creativity of their residents.
+- The more creative value a block would have, the higher rents would increase from their starting value.
 
-Our model is a 2D array, with cells representing land patches and agents assigned to each patch. The agents have an income and creativity value, and the patches have a rent. The agents move when they are unhappy due to not being able to afford rent. Shown below are two 2D cells, one right after the landscape was initialized, and the other after agents have moved around for 10 time steps. The darkness of the cell represents the population density of that cell. The agents start out pretty evenly spread, and move around, generally converging on a few very popular cells and some very sparse ones.
+Our model is a 2D array, with cells representing land patches and agents assigned to each patch. The agents have an income and creativity value, and the patches have a rent. The agents move when they are unhappy due to not being able to afford rent. Shown below are two 2D cells, one right after the landscape was initialized, and the other after agents have moved around for 10 time steps. The darkness of the cell represents the population density of that cell. The agents are initialized evenly across the grid; however, after the agents decrease their overall movement after several time steps, the distribution is heavily skewed with a few patches containing a large portion of the population, while others remain sparse.
 
 ![](imgs/population_cellviewer_init.png) | ![](imgs/population_cellviewer_10steps.png)
 :--------------------------------:|:-----------------------------------:
 
-In their subsequent investigation of optimizing for creativity in a city, the authors focused on the change in creative value over the N time steps.  Our questioning is expanded from their focus only on maximizing creativity, in that we are focused on the balance of community transformation. The we use two metrics in our simulation to capture this balance: The positive effect from transformation is the change in creative value; the negative effect is the increased displacement of residents in neighborhoods.
+In their subsequent investigation of optimizing for creativity in a city, Malik et al. focused on the change in creative value over the N time steps.  Our questioning is expanded from their focus only on maximizing creativity, in that we are focused on the balance of community transformation. The we use two metrics in our simulation to capture this balance: The positive effect from transformation is the change in creative value; the negative effect is the increased displacement of residents in neighborhoods.
 
-To observe change in creativity, we had several different metrics. Creativity value of a patch of land is measured based on the number of high and medium creative individuals in those patches. High creative individuals are worth 10, and medium are worth 5. All other agents don't contribute to the creative value. One useful visual for creativity in a city is a CDF of creativity values of all of the cells. The graph below shows two CDFs overlaid, one right after the city was initialized and the other after 10 time steps. After movement, more cells have very low creative values. Before agents move, 15% of the patches have a creativity value of zero, but that number increases to 40% after 10 timesteps. However, there are more patches with very high creative values after some movement. Before movement, only a couple of cells are above 40, but 10% of cells are above 40 after 10 steps. The CDF for before movement tails off at a highest value of 50, while the highest value after movement is 100.
+Creativity value of a patch of land is measured based on the number of high and medium creative individuals in those patches. High creative individuals are worth 10, and medium are worth 5. All other agents don't contribute to the creative value. One useful visual for creativity in a city is a CDF of creativity values of all of the cells. The graph below shows two CDFs overlaid, one right after the city was initialized and the other after 10 time steps. After movement, more cells have very low creative values. Before agents move, 15% of the patches have a creativity value of zero, but that number increases to 40% after 10 timesteps. However, there are more patches with very high creative values after some movement. Before movement, only a couple of cells are above 40, but 10% of cells are above 40 after 10 steps. The CDF of creative value at initialization tails off at a highest value of 50, while the CDF of creative value after 10 times steps of movement attains its maximum value at 100.
 
 ![](imgs/cdf_comparison_creativity.png) 
 
@@ -40,12 +40,12 @@ Agents are continuously displaced throughout the model, due to inability to pay 
 
 We added new components to the model, in order to model policies that curb negative effects like displacement. We took inspiration from cities like San Francisco, where subsidized housing is provided for residents.
 
-- Subsidized Agents (Welfare).  Both in the percentage of the population that is subsidized, and the rate at which each agent is subsidized.
-- Subsidized Housing Developed whenever new residential housing is built.
+- Subsidized Agents make up a user-defined percentage of the population and pay their housing costs at some reduced rate.
+- Subsidized Housing is developed whenever new residential housing is built.
 
 We implemented subsidization based on welfare; this choice was arbitrary, although we imagine the effects would be distinct when we allow for expansion of the city; both in the number of agents and the continued development of residential spaces. 
 
-The authors included other model dynamics.  In the ideal case, a thorough sensitivity analysis would have been conducted, to validate that the removal of features in the model would yield similar results.  However, we took a qualitative approach, and decided to strip certain parts away that did not do work for us in answering our question.
+Malik et al. included other model dynamics.  In the ideal case, a thorough sensitivity analysis would have been conducted, to validate that the removal of features in the model would yield similar results.  However, we took a qualitative approach, and decided to strip certain parts away that did not do work for us in answering our question.
 
 ## Experiments
 
@@ -62,7 +62,7 @@ We wanted to get more conclusive evidence, so we ran many experiments for values
 ![](imgs/errorbar_1000_trials.png) | ![](imgs/disp_perstep_1000trials.png)
 :--------------------------------:|:-----------------------------------:
 
-__Interpretation__: As shown in the graph, there is a positive correlation between amount of rent paid for subsidized agents and number of agents displaced. Lower rents for subsidized agents, which would be the result of a more aggressive subsidization policy, allow for less displacement both cumulatively and per timestep. 
+__Interpretation__: As shown in the graph, the x axis displays how much subsidized agents are required to pay.  Lower values describe agents which receive more subsidies, and are thus required to pay less for their housing.There is a positive correlation between the amount agents are required to pay for rent and the number of agents displaced. Lower rents for subsidized agents, which would be the result of a more aggressive subsidization policy, allow for less displacement both cumulatively and per timestep.
 
 ### Question: How does subsidization affect the diffusion of creativity in a city?
 
